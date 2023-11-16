@@ -9,8 +9,5 @@
         <module name="docto-2i" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="docto-2i" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>
