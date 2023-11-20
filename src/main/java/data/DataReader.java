@@ -1,13 +1,22 @@
 package data;
 
 
-import java.io.*;
+import jakarta.persistence.EntityManager;
+import modele.Salle;
+import modele.people.Manager;
+import modele.people.Medecin;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class DataReader {
 
-    public void readFiles(String folderPath) {
+    public ReadData readFiles(String folderPath) {
         File folder = new File(folderPath);
         File[] files = folder.listFiles();
+        ReadData readData = new ReadData();
 
         try {
             if (files == null) {
@@ -20,22 +29,29 @@ public class DataReader {
 
                     String line = br.readLine();
 
+                    // TODO: Inverse le switch et le while, on fait des multiples itérations du même check
+                    int i = 0;
                     while(line != null) {
                         switch (file.getName()) {
                             case "cadres.txt":
-                                CadresReader cr = new CadresReader();
-                                cr.insertLine(line.split(";"));
+                                ManagerReader cr = new ManagerReader();
+                                readData.addManager(cr.insertLine(line.split(";")));
                                 break;
                             case "medecins.txt":
+                                MedecinReader mr = new MedecinReader();
+                                readData.addMedecin(mr.insertLine(line.split(";")));
                                 break;
                             case "salles.txt":
                                 SallesReader sr = new SallesReader();
-                                sr.insertLine(line.split(";"));
+                                readData.addSalle(sr.insertLine(line.split(";")));
                                 break;
                             default:
-                                System.out.println(file.getName());
+
+                                //System.out.println(file.getName());
+                                break;
                         }
 
+                        i++;
                         line = br.readLine();
                     }
                 }
@@ -44,6 +60,26 @@ public class DataReader {
             System.err.println("ERR: Folder" + folderPath + " does not exist");
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+
+        return readData;
+    }
+
+    public void importData(EntityManager em, ReadData data) {
+        for(Manager manager: data.getManagers()) {
+            em.persist(manager.getLogin());
+            em.persist(manager.getPerson());
+            em.persist(manager);
+        }
+
+        for(Medecin medecin: data.getMedecins()) {
+            em.persist(medecin.getLogin());
+            em.persist(medecin.getPerson());
+            em.persist(medecin);
+        }
+
+        for(Salle salle: data.getSalles()) {
+            em.persist(salle);
         }
     }
 

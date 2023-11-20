@@ -28,4 +28,3 @@
 27;kellydio;DiosKell;Kelly;Diossi;28/12/1997;180, Rue Philippe de Girard, Lille;1;
 28;jamespat;mesPtgee;James;Patagueule;21/02/1996;51, Rue de Jussieu, Hénin-Beaumont;1;
 29;regissoe;eurdeoRi;Régis;Soeurdéimpots;05/04/2003;54, Rue Newton, Lille;1;
-
