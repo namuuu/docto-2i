@@ -1,0 +1,10 @@
+0;11;bleu;
+1;12;rouge;
+2;13;orange;
+3;14;verte;
+4;21;jaune;
+5;22;marron;
+6;23;noire;
+7;24;grise;
+8;31;violette;
+9;32;blanche;
