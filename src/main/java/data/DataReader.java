@@ -13,6 +13,11 @@ import java.io.IOException;
 
 public class DataReader {
 
+    /**
+     * Read all files in a specified folder
+     * @param folderPath path to the folder
+     * @return readData, an object containing all the data read
+     */
     public ReadData readFiles(String folderPath) {
         File folder = new File(folderPath);
         File[] files = folder.listFiles();
@@ -65,6 +70,11 @@ public class DataReader {
         return readData;
     }
 
+    /**
+     * Import data into the MySQL database
+     * @param em EntityManager, used to persist the data
+     * @param data ReadData, contains all the data to be persisted
+     */
     public void importData(EntityManager em, ReadData data) {
         for(Manager manager: data.getManagers()) {
             em.persist(manager.getLogin());
