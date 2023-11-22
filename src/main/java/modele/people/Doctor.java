@@ -5,7 +5,7 @@ import modele.HP;
 import modele.Person;
 
 @Entity
-public class Medecin {
+public class Doctor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,10 +27,10 @@ public class Medecin {
     )
     private boolean intern;
 
-    public Medecin() {
+    public Doctor() {
     }
 
-    public Medecin(Person person, HP hp, String address, int healthProfessionalNumber, boolean intern) {
+    public Doctor(Person person, HP hp, String address, int healthProfessionalNumber, boolean intern) {
         this.person = person;
         this.hp = hp;
         this.hp.setAddress(address);
@@ -72,7 +72,7 @@ public class Medecin {
 
     @Override
     public String toString() {
-        return "Medecin{" +
+        return "Doctor{" +
                 "id=" + did +
                 ", person=" + person +
                 ", hp=" + hp +
