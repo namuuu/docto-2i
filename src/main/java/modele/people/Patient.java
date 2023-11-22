@@ -3,14 +3,10 @@ package modele.people;
 import jakarta.persistence.*;
 import modele.Person;
 
-public class Patient {
+import java.util.Date;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer paid;
-
-    @OneToOne
-    private Person person;
+@Entity
+public class Patient extends Person {
 
     @Column(
             name = "request_type"
@@ -25,19 +21,10 @@ public class Patient {
     public Patient() {
     }
 
-    public Patient(Integer paid, Person person, boolean request_type, Integer identifier) {
-        this.paid = paid;
-        this.person = person;
+    public Patient(String firstname, String name, Date birthdate, boolean request_type, Integer identifier) {
+        super(firstname, name, birthdate);
         this.request_type = request_type;
         this.identifier = identifier;
-    }
-
-    public Person getPerson() {
-        return person;
-    }
-
-    public void setPerson(Person person) {
-        this.person = person;
     }
 
     public boolean isRequest_type() {
@@ -51,8 +38,6 @@ public class Patient {
     @Override
     public String toString() {
         return "Patient{" +
-                "ppid=" + paid +
-                ", person=" + person +
                 ", request_type=" + request_type +
                 ", identifier=" + identifier +
                 '}';

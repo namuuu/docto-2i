@@ -2,12 +2,10 @@ package modele;
 
 import jakarta.persistence.*;
 
-@Entity
-public class HP {
+import java.util.Date;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int hpid;
+@MappedSuperclass
+public abstract class HP extends Person {
 
     @Column(
             name = "login",
@@ -30,13 +28,10 @@ public class HP {
     public HP() {
     }
 
-    public HP(String login, String password) {
+    public HP(String firstname, String name, Date birthdate, String login, String password) {
+        super(firstname, name, birthdate);
         this.login = login;
         this.password = password;
-    }
-
-    public int getId() {
-        return hpid;
     }
 
     public String getLogin() {
@@ -58,7 +53,6 @@ public class HP {
     @Override
     public String toString() {
         return "Login{" +
-                "id=" + hpid +
                 ", login='" + login + '\'' +
                 ", password='" + password + '\'' +
                 '}';
