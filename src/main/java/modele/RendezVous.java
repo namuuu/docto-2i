@@ -1,42 +1,42 @@
 package modele;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
+import modele.people.Doctor;
+import modele.people.Patient;
 
+@Entity
 public class RendezVous {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer rvid;
     @OneToOne
-    private Integer peid;
+    private Patient patient;
     @OneToOne
-    private Integer cid;
+    private Creneau creneau;
     @OneToOne
-    private Integer numeroSalle;
+    private Salle salle;
     @OneToOne
-    private Integer did;
+    private Doctor doctor;
 
     public RendezVous() {
     }
 
-    public RendezVous(Integer rvid, Integer pid, Integer cid, Integer numeroSalle, Integer did) {
-        this.rvid = rvid;
-        this.peid = pid;
-        this.cid = cid;
-        this.numeroSalle = numeroSalle;
-        this.did = did;
+    public RendezVous(Patient patient, Creneau creneau, Salle salle, Doctor doctor) {
+        this.patient = patient;
+        this.creneau = creneau;
+        this.salle = salle;
+        this.doctor = doctor;
     }
 
     @Override
     public String toString() {
         return "RendezVous{" +
                 "rvid=" + rvid +
-                ", pid=" + peid +
-                ", cid=" + cid +
-                ", numeroSalle=" + numeroSalle +
-                ", did=" + did +
+                ", patient=" + patient +
+                ", creneau=" + creneau +
+                ", salle=" + salle +
+                ", doctor=" + doctor +
                 '}';
     }
 }
