@@ -2,14 +2,14 @@ package data;
 
 import modele.Salle;
 import modele.people.Manager;
-import modele.people.Medecin;
+import modele.people.Doctor;
 
 import java.util.ArrayList;
 
 public class ReadData {
-    private ArrayList<Manager> managers = new ArrayList<>();
-    private ArrayList<Medecin> medecins = new ArrayList<>();
-    private ArrayList<Salle> salles = new ArrayList<>();
+    private final ArrayList<Manager> managers = new ArrayList<>();
+    private final ArrayList<Doctor> doctors = new ArrayList<>();
+    private final ArrayList<Salle> salles = new ArrayList<>();
 
     public ReadData() {
     }
@@ -18,8 +18,8 @@ public class ReadData {
         managers.add(manager);
     }
 
-    public void addMedecin(Medecin medecin) {
-        medecins.add(medecin);
+    public void addMedecin(Doctor doctor) {
+        doctors.add(doctor);
     }
 
     public void addSalle(Salle salle) {
@@ -30,8 +30,8 @@ public class ReadData {
         return managers;
     }
 
-    public ArrayList<Medecin> getMedecins() {
-        return medecins;
+    public ArrayList<Doctor> getMedecins() {
+        return doctors;
     }
 
     public ArrayList<Salle> getSalles() {

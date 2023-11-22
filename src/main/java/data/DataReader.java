@@ -4,7 +4,7 @@ package data;
 import jakarta.persistence.EntityManager;
 import modele.Salle;
 import modele.people.Manager;
-import modele.people.Medecin;
+import modele.people.Doctor;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -82,10 +82,10 @@ public class DataReader {
             em.persist(manager);
         }
 
-        for(Medecin medecin: data.getMedecins()) {
-            em.persist(medecin.getHp());
-            em.persist(medecin.getPerson());
-            em.persist(medecin);
+        for(Doctor doctor : data.getMedecins()) {
+            em.persist(doctor.getHp());
+            em.persist(doctor.getPerson());
+            em.persist(doctor);
         }
 
         for(Salle salle: data.getSalles()) {
