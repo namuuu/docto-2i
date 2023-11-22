@@ -26,6 +26,9 @@ public class PlanningJournee {
     @OneToOne
     private Manager responsibleManager;
 
+    @ManyToOne
+    private Planning planning;
+
     @ManyToMany
     private ArrayList<Doctor> doctors = new ArrayList<>();
 
