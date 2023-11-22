@@ -3,11 +3,11 @@ package modele;
 import jakarta.persistence.*;
 
 @Entity
-public class Login {
+public class HP {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int hpid;
 
     @Column(
             name = "login",
@@ -22,16 +22,21 @@ public class Login {
     )
     private String password;
 
-    public Login() {
+    @Column(
+            name = "address"
+    )
+    private String address;
+
+    public HP() {
     }
 
-    public Login(String login, String password) {
+    public HP(String login, String password) {
         this.login = login;
         this.password = password;
     }
 
     public int getId() {
-        return id;
+        return hpid;
     }
 
     public String getLogin() {
@@ -46,10 +51,14 @@ public class Login {
         this.password = password;
     }
 
+    public String getAddress() { return address; }
+
+    public void setAddress(String address) { this.address = address; }
+
     @Override
     public String toString() {
         return "Login{" +
-                "id=" + id +
+                "id=" + hpid +
                 ", login='" + login + '\'' +
                 ", password='" + password + '\'' +
                 '}';

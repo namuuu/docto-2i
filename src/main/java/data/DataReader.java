@@ -77,13 +77,13 @@ public class DataReader {
      */
     public void importData(EntityManager em, ReadData data) {
         for(Manager manager: data.getManagers()) {
-            em.persist(manager.getLogin());
+            em.persist(manager.getHp());
             em.persist(manager.getPerson());
             em.persist(manager);
         }
 
         for(Medecin medecin: data.getMedecins()) {
-            em.persist(medecin.getLogin());
+            em.persist(medecin.getHp());
             em.persist(medecin.getPerson());
             em.persist(medecin);
         }

@@ -1,19 +1,16 @@
 package modele;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Salle {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
     private int numero;
 
+    @Column(
+            name = "name"
+    )
     private String nom;
 
     public Salle() {
@@ -22,10 +19,6 @@ public class Salle {
     public Salle(int numero, String nom) {
         this.numero = numero;
         this.nom = nom;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public int getNumero() {
@@ -42,5 +35,13 @@ public class Salle {
 
     public void setNom(String nom) {
         this.nom = nom;
+    }
+
+    @Override
+    public String toString() {
+        return "Salle{" +
+                ", numero=" + numero +
+                ", nom='" + nom + '\'' +
+                '}';
     }
 }

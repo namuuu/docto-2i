@@ -1,7 +1,7 @@
 package modele.people;
 
 import jakarta.persistence.*;
-import modele.Login;
+import modele.HP;
 import modele.Person;
 
 @Entity
@@ -9,18 +9,13 @@ public class Medecin {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int did;
 
     @OneToOne
     private Person person;
 
     @OneToOne
-    private Login login;
-
-    @Column(
-            name = "address"
-    )
-    private String address;
+    private HP hp;
 
     @Column(
             name = "health_professional_number"
@@ -35,10 +30,10 @@ public class Medecin {
     public Medecin() {
     }
 
-    public Medecin(Person person, Login login, String address, int healthProfessionalNumber, boolean intern) {
+    public Medecin(Person person, HP hp, String address, int healthProfessionalNumber, boolean intern) {
         this.person = person;
-        this.login = login;
-        this.address = address;
+        this.hp = hp;
+        this.hp.setAddress(address);
         this.healthProfessionalNumber = healthProfessionalNumber;
         this.intern = intern;
     }
@@ -47,16 +42,16 @@ public class Medecin {
         return person;
     }
 
-    public Login getLogin() {
-        return login;
+    public HP getHp() {
+        return hp;
     }
 
     public String getAddress() {
-        return address;
+        return hp.getAddress();
     }
 
     public void setAddress(String address) {
-        this.address = address;
+        this.hp.setAddress(address);
     }
 
     public int getHealthProfessionalNumber() {
@@ -78,10 +73,10 @@ public class Medecin {
     @Override
     public String toString() {
         return "Medecin{" +
-                "id=" + id +
+                "id=" + did +
                 ", person=" + person +
-                ", login=" + login +
-                ", address='" + address + '\'' +
+                ", hp=" + hp +
+                ", address='" + hp.getAddress() + '\'' +
                 ", healthProfessionalNumber=" + healthProfessionalNumber +
                 ", intern=" + intern +
                 '}';

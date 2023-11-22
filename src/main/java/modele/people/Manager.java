@@ -1,7 +1,7 @@
 package modele.people;
 
 import jakarta.persistence.*;
-import modele.Login;
+import modele.HP;
 import modele.Person;
 
 @Entity
@@ -9,54 +9,47 @@ public class Manager {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int mid;
 
     @OneToOne
     private Person person;
 
     @OneToOne
-    private Login login;
-
-    @Column(
-            name = "address"
-    )
-    private String address;
+    private HP hp;
 
     public Manager() {
     }
 
-    public Manager(Person person, Login login, String address) {
+    public Manager(Person person, HP hp, String address) {
         this.person = person;
-        this.login = login;
-        this.address = address;
+        this.hp = hp;
+        this.hp.setAddress(address);
     }
 
     public int getId() {
-        return id;
+        return mid;
     }
 
     public Person getPerson() {
         return person;
     }
 
-    public Login getLogin() {
-        return login;
+    public HP getHp() {
+        return hp;
     }
 
     public String getAddress() {
-        return address;
+        return hp.getAddress();
     }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
+    public void setAddress(String address) { this.hp.setAddress(address); }
 
     @Override
     public String toString() {
         return "Manager{" +
-                "id=" + id +
+                "id=" + mid +
                 ", person=" + person +
-                ", login=" + login +
+                ", hp=" + hp +
                 '}';
     }
 }
