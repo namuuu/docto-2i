@@ -10,7 +10,7 @@ public class Person {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int peid;
 
     @Column(
             name = "name",
@@ -40,7 +40,7 @@ public class Person {
     }
 
     public int getId() {
-        return id;
+        return peid;
     }
 
     public String getName() {
@@ -67,11 +67,10 @@ public class Person {
         this.birthdate = birthdate;
     }
 
-
     @Override
     public String toString() {
         return "Person{" +
-                "id=" + id +
+                "id=" + peid +
                 ", name='" + name + '\'' +
                 ", firstname='" + firstname + '\'' +
                 '}';
