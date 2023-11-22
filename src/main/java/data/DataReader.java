@@ -43,7 +43,7 @@ public class DataReader {
                                 readData.addManager(cr.insertLine(line.split(";")));
                                 break;
                             case "medecins.txt":
-                                MedecinReader mr = new MedecinReader();
+                                DoctorReader mr = new DoctorReader();
                                 readData.addMedecin(mr.insertLine(line.split(";")));
                                 break;
                             case "salles.txt":
@@ -77,14 +77,10 @@ public class DataReader {
      */
     public void importData(EntityManager em, ReadData data) {
         for(Manager manager: data.getManagers()) {
-            em.persist(manager.getHp());
-            em.persist(manager.getPerson());
             em.persist(manager);
         }
 
         for(Doctor doctor : data.getMedecins()) {
-            em.persist(doctor.getHp());
-            em.persist(doctor.getPerson());
             em.persist(doctor);
         }
 

@@ -1,16 +1,15 @@
 package modele;
 
 import jakarta.persistence.*;
-import modele.people.Manager;
 
 import java.util.Date;
 
-@Entity
-public class Person {
+@MappedSuperclass
+public abstract class Person {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int peid;
+    private int id;
 
     @Column(
             name = "name",
@@ -33,14 +32,14 @@ public class Person {
     public Person() {
     }
 
-    public Person(String name, String firstname, Date birthdate) {
+    public Person(String firstname, String name, Date birthdate) {
         this.name = name;
         this.firstname = firstname;
         this.birthdate = birthdate;
     }
 
     public int getId() {
-        return peid;
+        return id;
     }
 
     public String getName() {
@@ -70,7 +69,7 @@ public class Person {
     @Override
     public String toString() {
         return "Person{" +
-                "id=" + peid +
+                "id=" + id +
                 ", name='" + name + '\'' +
                 ", firstname='" + firstname + '\'' +
                 '}';

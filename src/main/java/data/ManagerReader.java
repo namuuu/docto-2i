@@ -1,7 +1,5 @@
 package data;
 
-import modele.HP;
-import modele.Person;
 import modele.people.Manager;
 
 import java.util.Date;
@@ -15,9 +13,7 @@ public class ManagerReader {
      */
     public Manager insertLine(String[] data) {
         Date date = new Date(data[5]);
-        Person person = new Person(data[4], data[3], date); // firstname, name, date
-        HP hp = new HP(data[1], data[2]); // login, password
 
-        return new Manager(person, hp, data[6]);
+        return new Manager(data[3], data[4], date, data[1], data[2], data[6]);
     }
 }

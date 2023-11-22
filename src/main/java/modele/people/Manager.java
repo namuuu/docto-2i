@@ -2,54 +2,38 @@ package modele.people;
 
 import jakarta.persistence.*;
 import modele.HP;
-import modele.Person;
+
+import java.util.Date;
 
 @Entity
-public class Manager {
+public class Manager extends HP {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int mid;
-
-    @OneToOne
-    private Person person;
-
-    @OneToOne
-    private HP hp;
+    @Column(
+            name = "address"
+    )
+    private String address;
 
     public Manager() {
     }
 
-    public Manager(Person person, HP hp, String address) {
-        this.person = person;
-        this.hp = hp;
-        this.hp.setAddress(address);
+    public Manager(String firstname, String name, Date birthdate, String login, String password, String address) {
+        super(firstname, name, birthdate, login, password);
+        this.address = address;
     }
 
-    public int getId() {
-        return mid;
-    }
-
-    public Person getPerson() {
-        return person;
-    }
-
-    public HP getHp() {
-        return hp;
-    }
-
+    @Override
     public String getAddress() {
-        return hp.getAddress();
+        return address;
     }
 
-    public void setAddress(String address) { this.hp.setAddress(address); }
+    @Override
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
     @Override
     public String toString() {
         return "Manager{" +
-                "id=" + mid +
-                ", person=" + person +
-                ", hp=" + hp +
                 '}';
     }
 }

@@ -2,20 +2,11 @@ package modele.people;
 
 import jakarta.persistence.*;
 import modele.HP;
-import modele.Person;
+
+import java.util.Date;
 
 @Entity
-public class Doctor {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int did;
-
-    @OneToOne
-    private Person person;
-
-    @OneToOne
-    private HP hp;
+public class Doctor extends HP {
 
     @Column(
             name = "health_professional_number"
@@ -27,31 +18,29 @@ public class Doctor {
     )
     private boolean intern;
 
+    @Column(
+            name = "address"
+    )
+    private String address;
+
     public Doctor() {
     }
 
-    public Doctor(Person person, HP hp, String address, int healthProfessionalNumber, boolean intern) {
-        this.person = person;
-        this.hp = hp;
-        this.hp.setAddress(address);
+    public Doctor(String firstname, String name, Date birthdate, String login, String password, String address, int healthProfessionalNumber, boolean intern) {
+        super(firstname, name, birthdate, login, password);
         this.healthProfessionalNumber = healthProfessionalNumber;
         this.intern = intern;
+        this.address = address;
     }
 
-    public Person getPerson() {
-        return person;
-    }
-
-    public HP getHp() {
-        return hp;
-    }
-
+    @Override
     public String getAddress() {
-        return hp.getAddress();
+        return address;
     }
 
+    @Override
     public void setAddress(String address) {
-        this.hp.setAddress(address);
+        this.address = address;
     }
 
     public int getHealthProfessionalNumber() {
@@ -73,10 +62,6 @@ public class Doctor {
     @Override
     public String toString() {
         return "Doctor{" +
-                "id=" + did +
-                ", person=" + person +
-                ", hp=" + hp +
-                ", address='" + hp.getAddress() + '\'' +
                 ", healthProfessionalNumber=" + healthProfessionalNumber +
                 ", intern=" + intern +
                 '}';
