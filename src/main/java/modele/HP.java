@@ -29,10 +29,11 @@ public abstract class HP extends Person {
     public HP() {
     }
 
-    public HP(String firstname, String name, Date birthdate, String login, String password) {
+    public HP(String firstname, String name, Date birthdate, String login, String password, String address) {
         super(firstname, name, birthdate);
         this.login = login;
         this.password = password;
+        this.address = address;
     }
 
     public String getLogin() {
