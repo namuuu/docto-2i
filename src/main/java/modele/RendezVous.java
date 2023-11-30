@@ -29,6 +29,22 @@ public class RendezVous {
         this.doctor = doctor;
     }
 
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public Creneau getCreneau() {
+        return creneau;
+    }
+
+    public Salle getSalle() {
+        return salle;
+    }
+
+    public Doctor getDoctor() {
+        return doctor;
+    }
+
     @Override
     public String toString() {
         return "RendezVous{" +

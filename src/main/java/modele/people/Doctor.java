@@ -18,29 +18,13 @@ public class Doctor extends HP {
     )
     private boolean intern;
 
-    @Column(
-            name = "address"
-    )
-    private String address;
-
     public Doctor() {
     }
 
     public Doctor(String firstname, String name, Date birthdate, String login, String password, String address, int healthProfessionalNumber, boolean intern) {
-        super(firstname, name, birthdate, login, password);
+        super(firstname, name, birthdate, login, password, address);
         this.healthProfessionalNumber = healthProfessionalNumber;
         this.intern = intern;
-        this.address = address;
-    }
-
-    @Override
-    public String getAddress() {
-        return address;
-    }
-
-    @Override
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public int getHealthProfessionalNumber() {
@@ -62,6 +46,8 @@ public class Doctor extends HP {
     @Override
     public String toString() {
         return "Doctor{" +
+                "firstname='" + super.getFirstname() + '\'' +
+                ", name='" + super.getName() + '\'' +
                 ", healthProfessionalNumber=" + healthProfessionalNumber +
                 ", intern=" + intern +
                 '}';
