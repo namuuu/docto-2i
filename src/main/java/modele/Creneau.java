@@ -10,6 +10,7 @@ public class Creneau {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer cid;
+
     @Column(
             name = "start_hour"
     )
@@ -18,8 +19,7 @@ public class Creneau {
     public Creneau() {
     }
 
-    public Creneau(Integer cid, Timestamp startHour) {
-        this.cid = cid;
+    public Creneau(Timestamp startHour) {
         this.startHour = startHour;
     }
 

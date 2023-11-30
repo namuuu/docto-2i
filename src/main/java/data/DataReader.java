@@ -2,9 +2,11 @@ package data;
 
 
 import jakarta.persistence.EntityManager;
+import modele.RendezVous;
 import modele.Salle;
-import modele.people.Manager;
 import modele.people.Doctor;
+import modele.people.Manager;
+import modele.planning.PlanningJournee;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -27,7 +29,8 @@ public class DataReader {
             if (files == null) {
                 throw new NullPointerException();
             }
-            for (File file : files) {
+            for (int i = files.length - 1; i >= 0; i--) {
+                File file = files[i];
                 if (file.isFile() && file.getName().endsWith(".txt")) {
                     FileReader fr = new FileReader(file.getPath());
                     BufferedReader br = new BufferedReader(fr);
@@ -54,12 +57,9 @@ public class DataReader {
                             }
                             break;
                         default:
-                            //System.out.println(file.getName());
-                            int i = 0;
-                            while (line != null) {
-                                i++;
-                                line = br.readLine();
-                            }
+                            readData.addPlanningJournee(
+                                new TimestampReader().insertLine(file.getName(), br, line, readData)
+                            );
                             break;
                     }
                 }
@@ -89,6 +89,18 @@ public class DataReader {
 
         for(Salle salle: data.getSalles()) {
             em.persist(salle);
+        }
+
+        em.persist(data.getPlanning());
+
+        for(PlanningJournee planningJournee: data.getPlanningJournees()) {
+            System.out.println(planningJournee.getDoctors());
+            em.persist(planningJournee);
+            for(RendezVous rendezVous: planningJournee.getRendezVous()) {
+                em.persist(rendezVous.getPatient());
+                em.persist(rendezVous.getCreneau());
+                em.persist(rendezVous);
+            }
         }
     }
 

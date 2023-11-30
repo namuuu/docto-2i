@@ -38,6 +38,8 @@ public class Patient extends Person {
     @Override
     public String toString() {
         return "Patient{" +
+                "firstname='" + super.getFirstname() + '\'' +
+                ", name='" + super.getName() + '\'' +
                 ", request_type=" + request_type +
                 ", identifier=" + identifier +
                 '}';

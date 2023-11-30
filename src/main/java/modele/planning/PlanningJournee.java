@@ -6,8 +6,7 @@ import modele.Salle;
 import modele.people.Doctor;
 import modele.people.Manager;
 
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 
 @Entity
 public class PlanningJournee {
@@ -30,23 +29,28 @@ public class PlanningJournee {
     private Planning planning;
 
     @ManyToMany
-    private ArrayList<Doctor> doctors = new ArrayList<>();
+    private List<Doctor> doctors = new ArrayList<>();
 
     @ManyToMany
-    private ArrayList<Manager> managers = new ArrayList<>();
+    private List<Manager> managers = new ArrayList<>();
 
     @ManyToMany
-    private ArrayList<Salle> salles = new ArrayList<>();
+    private List<Salle> salles = new ArrayList<>();
 
     @ManyToMany
-    private ArrayList<RendezVous> rendezVous = new ArrayList<>();
+    private List<RendezVous> rendezVous = new ArrayList<>();
 
     public PlanningJournee() {
     }
 
-    public PlanningJournee(Date date, Manager responsibleManager) {
+    public PlanningJournee(Date date, Manager responsibleManager, Planning planning, List<Doctor> doctors, List<Manager> managers, List<Salle> salles, List<RendezVous> rendezVous) {
         this.date = date;
         this.responsibleManager = responsibleManager;
+        this.planning = planning;
+        this.doctors = doctors;
+        this.managers = managers;
+        this.salles = salles;
+        this.rendezVous = rendezVous;
     }
 
     public int getId() {
@@ -61,19 +65,33 @@ public class PlanningJournee {
         return responsibleManager;
     }
 
-    public ArrayList<Doctor> getDoctors() {
+    public List<Doctor> getDoctors() {
         return doctors;
     }
 
-    public ArrayList<Manager> getManagers() {
+    public List<Manager> getManagers() {
         return managers;
     }
 
-    public ArrayList<Salle> getSalles() {
+    public List<Salle> getSalles() {
         return salles;
     }
 
-    public ArrayList<RendezVous> getRendezVous() {
+    public List<RendezVous> getRendezVous() {
         return rendezVous;
+    }
+
+    @Override
+    public String toString() {
+        return "PlanningJournee{" +
+                "id=" + id +
+                ", date=" + date +
+                ", responsibleManager=" + responsibleManager +
+                ", planning=" + planning +
+                ", doctors=" + doctors +
+                ", managers=" + managers +
+                ", salles=" + salles +
+                ", rendezVous=" + rendezVous +
+                '}';
     }
 }

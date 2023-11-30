@@ -21,9 +21,9 @@ public class FillDatabase {
 
                 et.commit();
             } catch (Exception e) {
-                System.err.println("Caught exception: " + e);
-                System.err.println("Applying Rollback...");
                 et.rollback();
+                System.err.println("Caught new exception. Rolling back transaction.");
+                throw new RuntimeException(e);
             }
         } finally {
             if(em != null && em.isOpen())
