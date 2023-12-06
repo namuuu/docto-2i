@@ -3,7 +3,6 @@ package modele;
 import jakarta.persistence.*;
 
 import java.util.Date;
-
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Person {

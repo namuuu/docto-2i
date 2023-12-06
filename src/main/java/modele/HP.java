@@ -4,6 +4,12 @@ import jakarta.persistence.*;
 
 import java.util.Date;
 
+@NamedQueries({
+        @NamedQuery(
+                name = "HP.login",
+                query = "SELECT COUNT(*) AS loginTrue FROM HP WHERE login=:login AND password=:password"
+        )
+})
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class HP extends Person {
