@@ -2,18 +2,18 @@ package vuecontrole;
 
 import javax.swing.*;
 
-public class Planning extends JFrame {
+public class HomeView extends JFrame {
     private JTabbedPane tabbedPane1;
     private JPanel panelPlanning;
 
-    public Planning() {
+    public HomeView() {
         setContentPane(panelPlanning);
         InitialisationFenetre();
     }
 
     private void InitialisationFenetre() {
         this.setTitle("DOCTO2I - Planning");
-        this.setSize(1000, 800);
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setLocationRelativeTo(null);
         this.getContentPane().setBackground(java.awt.Color.ORANGE);
         //this.add(panel1);
@@ -22,6 +22,6 @@ public class Planning extends JFrame {
     }
 
     public static void main(String[] args) {
-        Planning planning1 = new Planning();
+        HomeView homeView1 = new HomeView();
     }
 }

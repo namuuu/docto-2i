@@ -1,5 +1,10 @@
 package vuecontrole;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+import jakarta.persistence.Query;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -34,9 +39,13 @@ public class Login extends JFrame {
     }
 
     private void initConnexion() {
-        if(this.loginTextField.getText().equals("admin") && this.passwordField.getText().equals("admin")) {
-            //JOptionPane.showMessageDialog(this, "Connexion réussie !");
-            Planning planning1 = new Planning();
+        final EntityManagerFactory emf = Persistence.createEntityManagerFactory("Docto2IPU");
+        final EntityManager em = emf.createEntityManager();
+        Query query = em.createNamedQuery("HP.login");
+        query.setParameter("login", this.loginTextField.getText());
+        query.setParameter("password", this.passwordField.getText());
+        if((long) query.getSingleResult() == 1) {
+            HomeView homeView1 = new HomeView();
             this.dispose();
         } else {
             JOptionPane.showMessageDialog(this, "Connexion échouée !");
