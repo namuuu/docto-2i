@@ -8,6 +8,10 @@ import java.util.Date;
         @NamedQuery(
                 name = "HP.login",
                 query = "SELECT COUNT(*) AS loginTrue FROM HP WHERE login=:login AND password=:password"
+        ),
+        @NamedQuery(
+                name = "HP.getByLogin",
+                query = "SELECT hp FROM HP hp WHERE hp.login = :login"
         )
 })
 @Entity
