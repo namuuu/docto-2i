@@ -28,7 +28,9 @@ public class PlanningJournee {
     @ManyToOne
     private Planning planning;
 
-    @ManyToMany
+    @ManyToMany(
+            fetch = FetchType.EAGER
+    )
     private List<Doctor> doctors = new ArrayList<>();
 
     @ManyToMany
