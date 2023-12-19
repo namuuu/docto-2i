@@ -1,7 +1,10 @@
 package vuecontrole;
 
+import modele.HP;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.DayOfWeek;
@@ -19,10 +22,12 @@ public class HomeView extends JFrame {
     private JTable tablePlanningDocteur;
     private JTable tablePlanningSalle;
     private JLabel LabelDate;
+    private HP hp;
     private final String date;
 
     public HomeView() {
         this.date = LocalDate.now().format(DateTimeFormatter.ofPattern("EEEE dd MMMM", Locale.FRANCE));
+        this.hp = null;
         this.LabelDate.setText(date);
         setContentPane(panelPlanning);
         InitialisationFenetre();
@@ -37,6 +42,12 @@ public class HomeView extends JFrame {
                 dispose();
             }
         });
+    }
+
+    public HomeView(HP hp) throws HeadlessException {
+        this();
+        this.hp = hp;
+        this.labelDoctorName.setText(hp.getFirstname() + " " + hp.getName());
     }
 
     private void InitialisationTableauPlanningGlobal() {
