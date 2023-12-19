@@ -20,7 +20,7 @@ public class GetDoctorPlanning {
                 query.setParameter("doctorid", 4);
                 query.setParameter("date", "20231101");
 
-                List<RendezVous> list =  query.getResultList();
+                List<RendezVous> list = query.getResultList();
                 for(RendezVous rv : list) {
                     System.out.println(rv);
                 }
