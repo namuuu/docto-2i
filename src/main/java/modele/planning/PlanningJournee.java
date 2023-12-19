@@ -20,7 +20,7 @@ public class PlanningJournee {
     @Column(
             name = "date"
     )
-    private Date date;
+    private String date;
 
     @OneToOne
     private Manager responsibleManager;
@@ -45,7 +45,7 @@ public class PlanningJournee {
     public PlanningJournee() {
     }
 
-    public PlanningJournee(Date date, Manager responsibleManager, Planning planning, List<Doctor> doctors, List<Manager> managers, List<Salle> salles, List<RendezVous> rendezVous) {
+    public PlanningJournee(String date, Manager responsibleManager, Planning planning, List<Doctor> doctors, List<Manager> managers, List<Salle> salles, List<RendezVous> rendezVous) {
         this.date = date;
         this.responsibleManager = responsibleManager;
         this.planning = planning;
@@ -59,7 +59,7 @@ public class PlanningJournee {
         return id;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 

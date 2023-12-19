@@ -8,6 +8,12 @@ import jakarta.persistence.*;
         ),
         @NamedQuery(name = "Planning.getJourneesById",
                 query = "SELECT pj FROM PlanningJournee pj JOIN pj.planning p WHERE p.id = :id"
+        ),
+        @NamedQuery(name = "Planning.getJourneeOfDoctorByDate",
+                query = "SELECT pj.rendezVous FROM RendezVous rv JOIN PlanningJournee pj JOIN pj.planning p JOIN Doctor d ON rv.doctor = d " +
+                        "WHERE p.id = :planningid " +
+                        "AND d.id = :doctorid " +
+                        "AND pj.date = :date"
         )
 })
 @Entity
@@ -24,5 +30,12 @@ public class Planning {
 
     public int getId() {
         return id;
+    }
+
+    @Override
+    public String toString() {
+        return "Planning{" +
+                "id=" + id +
+                '}';
     }
 }
