@@ -10,7 +10,6 @@ import modele.planning.PlanningJournee;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -72,6 +71,6 @@ public class TimestampReader {
         boolean special = Boolean.parseBoolean(data[7]);
 
         Patient patient = new Patient(patientFirstName, patientName, birthdate, special, patientNumber);
-        return new RendezVous(patient, new Creneau(new Timestamp(startHour)), salle, doctor);
+        return new RendezVous(patient, new Creneau(startHour), salle, doctor);
     }
 }
