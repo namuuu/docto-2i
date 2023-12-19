@@ -9,7 +9,7 @@ public class FillDatabase {
 
 
     public static void main(String[] args) {
-        final EntityManagerFactory emf = Persistence.createEntityManagerFactory("Docto2IPU");
+        final EntityManagerFactory emf = Persistence.createEntityManagerFactory("Docto2IFill");
         final EntityManager em = emf.createEntityManager();
         try {
             final EntityTransaction et = em.getTransaction();
