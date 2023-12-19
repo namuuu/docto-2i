@@ -93,22 +93,20 @@ public class Score {
                                 continue;
 
                             // S'il y a un trou entre ce créneau et le précédent
+                            // Cela calcule à la fois tm et vm
+                            if(rvList.get(i).getCreneau().getStartHour() - rvList.get(i-1).getCreneau().getStartHour() > 1) {
+                                scoreInitial += rvList.get(i).getCreneau().getStartHour() - rvList.get(i-1).getCreneau().getStartHour();
+                            }
+
+                            // S'ily a changement de salle
+                            if(!rvList.get(i).getSalle().equals(rvList.get(i-1).getSalle())) {
+                                scoreInitial += 1;
+                            }
                         }
                     }
                 }
 
-//                List<Doctor> doctorList = em.createNamedQuery("Doctor.getAllDoctors", Doctor.class).getResultList();
-
-//                for(Doctor doc: doctorList) {
-//                    List<PlanningJournee> journeeList =  em.createNamedQuery("Planning.getJourneeOfDoctorByDate", PlanningJournee.class)
-//                            .setParameter("planningid", planning.getId())
-//                            .setParameter("doctorid", doc.getId())
-//                            .getResultList();
-//
-//                    for(PlanningJournee pj : journeeList) {
-//
-//                    }
-//                }
+                System.out.println("Score initial : " + scoreInitial);
 
                 et.commit();
             } catch (Exception e) {
