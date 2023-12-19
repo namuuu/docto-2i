@@ -44,15 +44,18 @@ public class Login extends JFrame {
     private void initConnexion() {
         final EntityManagerFactory emf = Persistence.createEntityManagerFactory("Docto2IPU");
         final EntityManager em = emf.createEntityManager();
-        HP hp = em.createNamedQuery("HP.login", HP.class)
-                .setParameter("login", "gasparda")
-                .setParameter("password", "AlzaGard")
-                .getSingleResult();
-        if(hp != null) {
-            HomeView homeView1 = new HomeView(hp);
-            this.dispose();
-        } else {
-            JOptionPane.showMessageDialog(this, "Connexion échouée !");
+        try {
+            HP hp = em.createNamedQuery("HP.login", HP.class)
+                    .setParameter("login", loginTextField.getText())
+                    .setParameter("password", passwordField.getText())
+                    .getSingleResult();
+            if(hp != null) {
+                System.out.println("hp :" + hp);
+                HomeView homeView1 = new HomeView(hp);
+                this.dispose();
+            }
+        } catch(Exception e) {
+            JOptionPane.showMessageDialog(null, "Login ou mot de passe incorrect", "Erreur", JOptionPane.ERROR_MESSAGE);
         }
     }
 

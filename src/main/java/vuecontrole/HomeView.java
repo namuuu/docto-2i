@@ -12,9 +12,11 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -29,17 +31,14 @@ public class HomeView extends JFrame {
     private JTable tablePlanningSalle;
     private JLabel LabelDate;
     private HP hp;
-    private final String date;
+    private String date;
 
     public HomeView() {
-        this.date = LocalDate.now().format(DateTimeFormatter.ofPattern("EEEE dd MMMM", Locale.FRANCE));
+        String date = new SimpleDateFormat("EEEE dd MMMM yyyy", Locale.FRENCH).format(new Date());
+
         this.hp = null;
-        this.LabelDate.setText(date);
+        this.LabelDate.setText(date.toString());
         setContentPane(panelPlanning);
-        InitialisationFenetre();
-        InitialisationTableauPlanningGlobal();
-        InitialisationTableauPlanningDocteur();
-        InitialisationTableauPlanningSalle();
 
         logoutButton.addActionListener(new ActionListener() {
             @Override
@@ -54,6 +53,10 @@ public class HomeView extends JFrame {
         this();
         this.hp = hp;
         this.labelDoctorName.setText(hp.getFirstname() + " " + hp.getName());
+        InitialisationFenetre();
+        InitialisationTableauPlanningGlobal();
+        InitialisationTableauPlanningDocteur();
+        InitialisationTableauPlanningSalle();
     }
 
     private void InitialisationTableauPlanningGlobal() {
@@ -92,8 +95,9 @@ public class HomeView extends JFrame {
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn("Heure");
         model.addColumn("Jour");
-        model.addRow(new Object[]{"Heure", date});
-        this.GetPlanningDocteur(model);
+
+        this.GetPlanningDocteur(model, hp, LocalDate.now());
+
         /*for(int i = 8; i < 22; i++) {
             model.addRow(new Object[]{i + "h00", "Rendez-vous n°" + i + " - Patient n°" + i + " - Salle n°" + i});
         }*/
@@ -111,16 +115,18 @@ public class HomeView extends JFrame {
         this.setVisible(true);
     }
 
-    private void GetPlanningDocteur(DefaultTableModel model){
+    private void GetPlanningDocteur(DefaultTableModel model, HP hp, LocalDate date) {
         final EntityManagerFactory emf = Persistence.createEntityManagerFactory("Docto2IPU");
         final EntityManager em = emf.createEntityManager();
         Query query = em.createNamedQuery("Planning.getJourneeOfDoctorByDate");
+
+
         query.setParameter("planningid", 1);
-        query.setParameter("doctorid", 4);
-        query.setParameter("date", "20231101");
+        query.setParameter("doctorid", hp.getId());
+        query.setParameter("date", date.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
 
         List<RendezVous> planningDocteur = query.getResultList();
-
+        System.out.println("boing boing boing boign");
         if(planningDocteur != null) {
             for (RendezVous rv : planningDocteur) {
                 //rv.substring(0, 2);
