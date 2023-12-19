@@ -33,16 +33,6 @@
           <grid row="7" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
         </constraints>
       </vspacer>
-      <hspacer id="ef2eb">
-        <constraints>
-          <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-      </hspacer>
-      <hspacer id="c63c6">
-        <constraints>
-          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-      </hspacer>
       <hspacer id="e7d7d">
         <constraints>
           <grid row="5" column="2" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
@@ -55,9 +45,10 @@
       </hspacer>
       <component id="f8d31" class="javax.swing.JLabel" binding="pageName">
         <constraints>
-          <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <font name="Harlow Solid Italic" size="26"/>
           <text value="Connexion"/>
         </properties>
       </component>
@@ -73,7 +64,7 @@
         <properties>
           <enabled value="true"/>
           <font size="16" style="1"/>
-          <foreground color="-65546"/>
+          <foreground color="-13947600"/>
           <text value="Valider"/>
         </properties>
       </component>
@@ -97,20 +88,22 @@
           <grid row="6" column="2" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
       </hspacer>
-      <component id="a38a1" class="javax.swing.JLabel">
+      <component id="a38a1" class="javax.swing.JLabel" binding="labelLogin">
         <constraints>
-          <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Login :"/>
+          <font size="16"/>
+          <text value="Pseudo"/>
         </properties>
       </component>
-      <component id="85dca" class="javax.swing.JLabel">
+      <component id="85dca" class="javax.swing.JLabel" binding="labelPassword">
         <constraints>
-          <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Password :"/>
+          <font size="16"/>
+          <text value="Mot de Passe"/>
         </properties>
       </component>
     </children>

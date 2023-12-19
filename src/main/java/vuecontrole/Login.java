@@ -16,6 +16,8 @@ public class Login extends JFrame {
     private JTextField loginTextField;
     private JLabel pageName;
     private JButton buttonSubmit;
+    private JLabel labelLogin;
+    private JLabel labelPassword;
 
     public Login() throws HeadlessException {
         setContentPane(panelLogin);
@@ -45,6 +47,7 @@ public class Login extends JFrame {
         query.setParameter("login", this.loginTextField.getText());
         query.setParameter("password", this.passwordField.getText());
         if((long) query.getSingleResult() == 1) {
+
             HomeView homeView1 = new HomeView();
             this.dispose();
         } else {
