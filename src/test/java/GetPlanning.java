@@ -12,7 +12,7 @@ public class GetPlanning {
         final EntityManager em = emf.createEntityManager();
 
         try {
-            final EntityTransaction et =em.getTransaction();
+            final EntityTransaction et = em.getTransaction();
             try {
                 et.begin();
 
