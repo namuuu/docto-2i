@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
+import modele.HP;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,6 +17,8 @@ public class Login extends JFrame {
     private JTextField loginTextField;
     private JLabel pageName;
     private JButton buttonSubmit;
+    private JLabel labelLogin;
+    private JLabel labelPassword;
 
     public Login() throws HeadlessException {
         setContentPane(panelLogin);
@@ -41,11 +44,12 @@ public class Login extends JFrame {
     private void initConnexion() {
         final EntityManagerFactory emf = Persistence.createEntityManagerFactory("Docto2IPU");
         final EntityManager em = emf.createEntityManager();
-        Query query = em.createNamedQuery("HP.login");
-        query.setParameter("login", this.loginTextField.getText());
-        query.setParameter("password", this.passwordField.getText());
-        if((long) query.getSingleResult() == 1) {
-            HomeView homeView1 = new HomeView();
+        HP hp = em.createNamedQuery("HP.login", HP.class)
+                .setParameter("login", "gasparda")
+                .setParameter("password", "AlzaGard")
+                .getSingleResult();
+        if(hp != null) {
+            HomeView homeView1 = new HomeView(hp);
             this.dispose();
         } else {
             JOptionPane.showMessageDialog(this, "Connexion échouée !");

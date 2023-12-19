@@ -7,7 +7,7 @@ import java.util.Date;
 @NamedQueries({
         @NamedQuery(
                 name = "HP.login",
-                query = "SELECT COUNT(*) AS loginTrue FROM HP WHERE login=:login AND password=:password"
+                query = "SELECT hp FROM HP hp WHERE hp.login=:login AND hp.password=:password"
         )
 })
 @Entity
