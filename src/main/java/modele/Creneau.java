@@ -2,8 +2,6 @@ package modele;
 
 import jakarta.persistence.*;
 
-import java.sql.Timestamp;
-
 @Entity
 public class Creneau {
 
@@ -14,20 +12,20 @@ public class Creneau {
     @Column(
             name = "start_hour"
     )
-    private Timestamp startHour;
+    private int startHour;
 
     public Creneau() {
     }
 
-    public Creneau(Timestamp startHour) {
+    public Creneau(int startHour) {
         this.startHour = startHour;
     }
 
-    public Timestamp getStartHour() {
+    public int getStartHour() {
         return startHour;
     }
 
-    public void setStartHour(Timestamp startHour) {
+    public void setStartHour(int startHour) {
         this.startHour = startHour;
     }
 
