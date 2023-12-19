@@ -11,14 +11,13 @@ import modele.planning.PlanningJournee;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class TimestampReader {
     public PlanningJournee insertLine(String filename, BufferedReader br, String line, ReadData readData) throws IOException {
         Manager reponsibleManager = null;
-        int rendezVousNb;
         List<Doctor> doctors = new ArrayList<>();
         List<Salle> sallesDispo = new ArrayList<>();
         List<RendezVous> rendezVousList = new ArrayList<>();
@@ -34,7 +33,6 @@ public class TimestampReader {
                     reponsibleManager = readData.getManagers().get(cadreResponsableId);
                     break;
                 case 1:
-                    rendezVousNb = Integer.parseInt(data[0]);
                     break;
                 case 2:
                     for (String professionalNumber : data) {
@@ -44,7 +42,7 @@ public class TimestampReader {
                     }
                     break;
                 case 3:
-                    for(String salleNumber : data) {
+                    for (String salleNumber : data) {
                         sallesDispo.add(readData.getSalles().get(Integer.parseInt(salleNumber)));
                     }
                     break;
@@ -57,10 +55,7 @@ public class TimestampReader {
             i++;
         }
 
-        LocalDate localDate = LocalDate.parse(filename.substring(0,8), DateTimeFormatter.BASIC_ISO_DATE);
-        Date date = Date.from(localDate.atStartOfDay().toInstant(java.time.ZoneOffset.UTC));
-
-        return new PlanningJournee(date, reponsibleManager, readData.getPlanning(), doctors, new ArrayList<>(), sallesDispo, rendezVousList);
+        return new PlanningJournee(filename.substring(0,8), reponsibleManager, readData.getPlanning(), doctors, new ArrayList<>(), sallesDispo, rendezVousList);
 
     }
 
