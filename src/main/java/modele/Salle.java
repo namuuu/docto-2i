@@ -40,7 +40,7 @@ public class Salle {
     @Override
     public String toString() {
         return "Salle{" +
-                ", numero=" + numero +
+                " numero=" + numero +
                 ", nom='" + nom + '\'' +
                 '}';
     }

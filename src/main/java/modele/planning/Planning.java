@@ -14,6 +14,12 @@ import jakarta.persistence.*;
                         "WHERE p.id = :planningid " +
                         "AND d.id = :doctorid " +
                         "AND pj.date = :date"
+        ),
+        @NamedQuery(name = "Planning.getJourneeOfSalleByDate",
+                query = "SELECT pj.rendezVous FROM RendezVous rv JOIN PlanningJournee pj JOIN pj.planning p JOIN Salle s ON rv.salle = s " +
+                        "WHERE p.id = :planningid " +
+                        "AND s.id = :salleid " +
+                        "AND pj.date = :date"
         )
 })
 @Entity

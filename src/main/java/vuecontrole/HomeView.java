@@ -1,5 +1,7 @@
 package vuecontrole;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -16,9 +18,8 @@ import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
+import java.util.*;
 import java.util.List;
-import java.util.Locale;
 
 public class HomeView extends JFrame {
     private JTabbedPane tabbedPane1;
@@ -120,21 +121,31 @@ public class HomeView extends JFrame {
         final EntityManager em = emf.createEntityManager();
         Query query = em.createNamedQuery("Planning.getJourneeOfDoctorByDate");
 
-
+        // Test avec une date en dur, prévoir quand aucun planning pour la journée !
         query.setParameter("planningid", 1);
-        query.setParameter("doctorid", hp.getId());
-        query.setParameter("date", date.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+        //query.setParameter("doctorid", hp.getId());
+        query.setParameter("doctorid", 4);
+        //query.setParameter("date", date.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+        query.setParameter("date", "20231101");
 
         List<RendezVous> planningDocteur = query.getResultList();
-        System.out.println("boing boing boing boign");
+        planningDocteur.sort(Comparator.comparing(rv -> rv.getCreneau().getStartHour()));
+
         if(planningDocteur != null) {
             for (RendezVous rv : planningDocteur) {
-                //rv.substring(0, 2);
-                System.out.println(rv);
+                model.addRow(new Object[]{rv.getCreneau().getStartHour() + "h00", " - Patient n°" + rv.getPatient().getId() + " - Salle n°" + rv.getSalle().getNumero()});
             }
         } else {
             JOptionPane.showMessageDialog(this, "Echec du chargement du planning !");
         }
+    }
+
+    private void GetPlanningSalle(DefaultTableModel model, HP hp, LocalDate date) {
+        final EntityManagerFactory emf = Persistence.createEntityManagerFactory("Docto2IPU");
+        final EntityManager em = emf.createEntityManager();
+        Query query = em.createNamedQuery("Planning.getJourneeOfDoctorByDate");
+
+        List<RendezVous> planningDocteur = query.getResultList();
     }
 
     public static void main(String[] args) {
