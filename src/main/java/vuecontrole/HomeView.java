@@ -1,7 +1,5 @@
 package vuecontrole;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -15,7 +13,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -31,6 +28,10 @@ public class HomeView extends JFrame {
     private JTable tablePlanningDocteur;
     private JTable tablePlanningSalle;
     private JLabel LabelDate;
+    private JSpinner spinner;
+    private JPanel jLabelRechercheSalle;
+    private JLabel rechercheSalle;
+    private JButton validerRecherche;
     private HP hp;
     private String date;
 
@@ -48,6 +49,12 @@ public class HomeView extends JFrame {
                 dispose();
             }
         });
+        validerRecherche.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                InitialisationTableauPlanningSalle();
+            }
+        });
     }
 
     public HomeView(HP hp) throws HeadlessException {
@@ -57,7 +64,6 @@ public class HomeView extends JFrame {
         InitialisationFenetre();
         InitialisationTableauPlanningGlobal();
         InitialisationTableauPlanningDocteur();
-        InitialisationTableauPlanningSalle();
     }
 
     private void InitialisationTableauPlanningGlobal() {
@@ -150,7 +156,8 @@ public class HomeView extends JFrame {
 
         query.setParameter("planningid", 1);
         // A récupérer dans un champs de saisie
-        query.setParameter("sallenum", 11);
+        query.setParameter("sallenum", spinner.getValue().toString());
+        System.out.println(spinner.getValue().toString());
         query.setParameter("date", "20231101");
 
         List<RendezVous> planningSalle = query.getResultList();
@@ -173,5 +180,9 @@ public class HomeView extends JFrame {
 
     public static void main(String[] args) {
         HomeView homeView1 = new HomeView();
+    }
+
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
     }
 }

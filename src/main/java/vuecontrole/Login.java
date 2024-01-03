@@ -6,10 +6,13 @@ import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
 import modele.HP;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
 
 public class Login extends JFrame {
     private JPasswordField passwordField;
@@ -19,9 +22,23 @@ public class Login extends JFrame {
     private JButton buttonSubmit;
     private JLabel labelLogin;
     private JLabel labelPassword;
+    private JLabel logo;
 
     public Login() throws HeadlessException {
         setContentPane(panelLogin);
+
+        // Chargement du logo
+        // TODO : à corriger
+        try {
+            System.out.println("test");
+            BufferedImage monLogo = ImageIO.read(new File("src/main/resources/images/logo.png"));
+            JLabel pic = new JLabel(new ImageIcon(monLogo));
+            pic.setPreferredSize(new Dimension(200, 200));
+            logo.add(pic, BorderLayout.CENTER);
+        } catch (Exception e) {
+            // Affichage erreur en cas de problème
+            e.printStackTrace();
+        }
         InitialisationFenetre();
         buttonSubmit.addActionListener(new ActionListener() {
             @Override

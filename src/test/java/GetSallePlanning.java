@@ -21,12 +21,8 @@ public class GetSallePlanning {
 
                 List<RendezVous> list =  query.getResultList();
                 for(RendezVous rv : list) {
-                    System.out.println(rv);
+                    System.out.println(rv.getSalle().getNumero());
                 }
-//                List<PlanningJournee> list =  query.getResultList();
-//                for(PlanningJournee rv : list) {
-//                    System.out.println(rv);
-//                }
 
                 et.commit();
             } catch (Exception e) {
