@@ -81,10 +81,9 @@ public class HomeView extends JFrame {
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn("Heure");
         model.addColumn("Jour");
-        model.addRow(new Object[]{"Heure", date});
-        for(int i = 8; i < 22; i++) {
-            model.addRow(new Object[]{i + "h00", "Rendez-vous n°" + i + " - Patient n°" + i + " - Salle n°" + i});
-        }
+
+        this.GetPlanningSalle(model, LocalDate.now());
+
         tablePlanningSalle.setModel(model);
         tablePlanningSalle.getColumnModel().getColumn(0).setPreferredWidth(150);
         tablePlanningSalle.getColumnModel().getColumn(1).setPreferredWidth(750);
@@ -99,9 +98,6 @@ public class HomeView extends JFrame {
 
         this.GetPlanningDocteur(model, hp, LocalDate.now());
 
-        /*for(int i = 8; i < 22; i++) {
-            model.addRow(new Object[]{i + "h00", "Rendez-vous n°" + i + " - Patient n°" + i + " - Salle n°" + i});
-        }*/
         tablePlanningDocteur.setModel(model);
         tablePlanningDocteur.getColumnModel().getColumn(0).setPreferredWidth(150);
         tablePlanningDocteur.getColumnModel().getColumn(1).setPreferredWidth(750);
@@ -122,30 +118,57 @@ public class HomeView extends JFrame {
         Query query = em.createNamedQuery("Planning.getJourneeOfDoctorByDate");
 
         // Test avec une date en dur, prévoir quand aucun planning pour la journée !
+        //query.setParameter("planningid", 1);
         query.setParameter("planningid", 1);
-        //query.setParameter("doctorid", hp.getId());
-        query.setParameter("doctorid", 4);
-        //query.setParameter("date", date.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
-        query.setParameter("date", "20231101");
+        query.setParameter("doctorid", hp.getId());
+        //query.setParameter("doctorid", 4);
+        query.setParameter("date", date.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+        //query.setParameter("date", "20231101");
 
         List<RendezVous> planningDocteur = query.getResultList();
         planningDocteur.sort(Comparator.comparing(rv -> rv.getCreneau().getStartHour()));
 
-        if(planningDocteur != null) {
+        if(planningDocteur != null && planningDocteur.toArray().length > 0) {
+            model.addRow(new Object[]{"Heure", "Rendez-vous"});
             for (RendezVous rv : planningDocteur) {
-                model.addRow(new Object[]{rv.getCreneau().getStartHour() + "h00", " - Patient n°" + rv.getPatient().getId() + " - Salle n°" + rv.getSalle().getNumero()});
+                model.addRow(new Object[]{rv.getCreneau().getStartHour() + "h00",
+                        " Patient " + rv.getPatient().getFirstname() + " " + rv.getPatient().getName()
+                        + " - Salle n°" + rv.getSalle().getNumero() + " - " + rv.getSalle().getNom()
+                });
             }
+        } else if(planningDocteur.toArray().length == 0) {
+            model.addRow(new Object[]{"Heure", "Aucun rendez-vous"});
         } else {
             JOptionPane.showMessageDialog(this, "Echec du chargement du planning !");
         }
     }
 
-    private void GetPlanningSalle(DefaultTableModel model, HP hp, LocalDate date) {
+    private void GetPlanningSalle(DefaultTableModel model, LocalDate date) {
         final EntityManagerFactory emf = Persistence.createEntityManagerFactory("Docto2IPU");
         final EntityManager em = emf.createEntityManager();
-        Query query = em.createNamedQuery("Planning.getJourneeOfDoctorByDate");
+        Query query = em.createNamedQuery("Planning.getJourneeOfSalleByDate");
 
-        List<RendezVous> planningDocteur = query.getResultList();
+        query.setParameter("planningid", 1);
+        // A récupérer dans un champs de saisie
+        query.setParameter("sallenum", 11);
+        query.setParameter("date", "20231101");
+
+        List<RendezVous> planningSalle = query.getResultList();
+        planningSalle.sort(Comparator.comparing(rv -> rv.getCreneau().getStartHour()));
+
+        if(planningSalle != null && planningSalle.toArray().length > 0) {
+            model.addRow(new Object[]{"Heure", "Rendez-vous"});
+            for (RendezVous rv : planningSalle) {
+                model.addRow(new Object[]{rv.getCreneau().getStartHour() + "h00",
+                        " Patient " + rv.getPatient().getFirstname() + " " + rv.getPatient().getName()
+                                + " - Salle n°" + rv.getSalle().getNumero() + " - " + rv.getSalle().getNom()
+                });
+            }
+        } else if(planningSalle.toArray().length == 0) {
+            model.addRow(new Object[]{"Heure", "Aucun rendez-vous"});
+        } else {
+            JOptionPane.showMessageDialog(this, "Echec du chargement du planning !");
+        }
     }
 
     public static void main(String[] args) {
