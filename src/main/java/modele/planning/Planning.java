@@ -21,6 +21,9 @@ import jakarta.persistence.*;
                         "WHERE p.id = :planningid " +
                         "AND s.numero = :sallenum " +
                         "AND pj.date = :date"
+        ),
+        @NamedQuery(name = "Planning.getAllVersion",
+                query = "SELECT p FROM Planning p"
         )
 })
 @Entity

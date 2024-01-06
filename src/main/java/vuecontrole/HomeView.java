@@ -6,6 +6,8 @@ import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
 import modele.HP;
 import modele.RendezVous;
+import modele.Salle;
+import modele.planning.Planning;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -19,7 +21,7 @@ import java.util.*;
 import java.util.List;
 
 public class HomeView extends JFrame {
-    private JTabbedPane tabbedPane1;
+    private JTabbedPane selectionPlanning;
     private JPanel panelPlanning;
     private JTable tablePlanningGlobal;
     private JLabel labelNameApp;
@@ -32,16 +34,18 @@ public class HomeView extends JFrame {
     private JPanel jLabelRechercheSalle;
     private JLabel rechercheSalle;
     private JButton validerRecherche;
+    private JComboBox salleCombo;
+    private JComboBox planningCombo;
+    private JPanel nomDocteur;
+    private JPanel nomOnglet;
     private HP hp;
     private String date;
 
     public HomeView() {
         String date = new SimpleDateFormat("EEEE dd MMMM yyyy", Locale.FRENCH).format(new Date());
-
         this.hp = null;
         this.LabelDate.setText(date.toString());
         setContentPane(panelPlanning);
-
         logoutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -52,21 +56,50 @@ public class HomeView extends JFrame {
         validerRecherche.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                InitialisationTableauPlanningSalle();
+                initialisationTableauPlanningSalle();
             }
         });
+
+        initSalleCombo();
+        initPlanningCombo();
     }
 
     public HomeView(HP hp) throws HeadlessException {
         this();
         this.hp = hp;
         this.labelDoctorName.setText(hp.getFirstname() + " " + hp.getName());
-        InitialisationFenetre();
-        InitialisationTableauPlanningGlobal();
-        InitialisationTableauPlanningDocteur();
+        if(this.hp.isDoctorOrManager() == 1) {
+            this.selectionPlanning.remove(1);
+        } else {
+            initialisationTableauPlanningDocteur();
+        }
+        initialisationFenetre();
+        initialisationTableauPlanningGlobal();
     }
 
-    private void InitialisationTableauPlanningGlobal() {
+    private void initSalleCombo() {
+        final EntityManagerFactory emf = Persistence.createEntityManagerFactory("Docto2IPU");
+        final EntityManager em = emf.createEntityManager();
+        Query query = em.createNamedQuery("Salle.getAll");
+
+        List<Salle> list =  query.getResultList();
+        for(Salle s : list) {
+            salleCombo.addItem(s.getNumero() + " - " + s.getNom());
+        }
+    }
+
+    private void initPlanningCombo() {
+        final EntityManagerFactory emf = Persistence.createEntityManagerFactory("Docto2IPU");
+        final EntityManager em = emf.createEntityManager();
+        Query query = em.createNamedQuery("Planning.getAllVersion");
+
+        List<Planning> list =  query.getResultList();
+        for(Planning p : list) {
+            planningCombo.addItem("Planning V" + p.getId());
+        }
+    }
+
+    private void initialisationTableauPlanningGlobal() {
         tablePlanningGlobal.setEnabled(false);
         tablePlanningGlobal.setRowHeight(50);
         DefaultTableModel model = new DefaultTableModel();
@@ -81,35 +114,35 @@ public class HomeView extends JFrame {
         tablePlanningGlobal.getColumnModel().getColumn(1).setPreferredWidth(750);
     }
 
-    private void InitialisationTableauPlanningSalle(){
+    private void initialisationTableauPlanningSalle(){
         tablePlanningSalle.setEnabled(false);
         tablePlanningSalle.setRowHeight(50);
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn("Heure");
         model.addColumn("Jour");
 
-        this.GetPlanningSalle(model, LocalDate.now());
+        this.getPlanningSalle(model, LocalDate.now());
 
         tablePlanningSalle.setModel(model);
         tablePlanningSalle.getColumnModel().getColumn(0).setPreferredWidth(150);
         tablePlanningSalle.getColumnModel().getColumn(1).setPreferredWidth(750);
     }
 
-    private void InitialisationTableauPlanningDocteur(){
+    private void initialisationTableauPlanningDocteur(){
         tablePlanningDocteur.setEnabled(false);
         tablePlanningDocteur.setRowHeight(50);
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn("Heure");
         model.addColumn("Jour");
 
-        this.GetPlanningDocteur(model, hp, LocalDate.now());
+        this.getPlanningDocteur(model, hp, LocalDate.now());
 
         tablePlanningDocteur.setModel(model);
         tablePlanningDocteur.getColumnModel().getColumn(0).setPreferredWidth(150);
         tablePlanningDocteur.getColumnModel().getColumn(1).setPreferredWidth(750);
     }
 
-    private void InitialisationFenetre() {
+    private void initialisationFenetre() {
         this.setTitle("DOCTO2I - Planning");
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setLocationRelativeTo(null);
@@ -118,7 +151,7 @@ public class HomeView extends JFrame {
         this.setVisible(true);
     }
 
-    private void GetPlanningDocteur(DefaultTableModel model, HP hp, LocalDate date) {
+    private void getPlanningDocteur(DefaultTableModel model, HP hp, LocalDate date) {
         final EntityManagerFactory emf = Persistence.createEntityManagerFactory("Docto2IPU");
         final EntityManager em = emf.createEntityManager();
         Query query = em.createNamedQuery("Planning.getJourneeOfDoctorByDate");
@@ -149,16 +182,18 @@ public class HomeView extends JFrame {
         }
     }
 
-    private void GetPlanningSalle(DefaultTableModel model, LocalDate date) {
+    private void getPlanningSalle(DefaultTableModel model, LocalDate date) {
         final EntityManagerFactory emf = Persistence.createEntityManagerFactory("Docto2IPU");
         final EntityManager em = emf.createEntityManager();
         Query query = em.createNamedQuery("Planning.getJourneeOfSalleByDate");
 
         query.setParameter("planningid", 1);
-        // A récupérer dans un champs de saisie
-        query.setParameter("sallenum", spinner.getValue().toString());
-        System.out.println(spinner.getValue().toString());
-        query.setParameter("date", "20231101");
+
+        // Récupérer l'élement sélectionné dans la combobox
+        String salle = salleCombo.getSelectedItem().toString();
+        String[] salleSplit = salle.split(" - ");
+        query.setParameter("sallenum", Integer.parseInt(salleSplit[0]));
+        query.setParameter("date", date.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
 
         List<RendezVous> planningSalle = query.getResultList();
         planningSalle.sort(Comparator.comparing(rv -> rv.getCreneau().getStartHour()));
@@ -182,7 +217,4 @@ public class HomeView extends JFrame {
         HomeView homeView1 = new HomeView();
     }
 
-    private void createUIComponents() {
-        // TODO: place custom component creation code here
-    }
 }

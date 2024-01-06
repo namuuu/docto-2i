@@ -3,7 +3,6 @@ package vuecontrole;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
-import jakarta.persistence.Query;
 import modele.HP;
 
 import javax.imageio.ImageIO;
@@ -26,11 +25,14 @@ public class Login extends JFrame {
 
     public Login() throws HeadlessException {
         setContentPane(panelLogin);
+        initialisationFenetre();
+        chargementLogo();
+        listenerConnexion();
+    }
 
-        // Chargement du logo
-        // TODO : à corriger
+    // Chargement du logo visible sur la page de login
+    private void chargementLogo() {
         try {
-            System.out.println("test");
             BufferedImage monLogo = ImageIO.read(new File("src/main/resources/images/logo.png"));
             JLabel pic = new JLabel(new ImageIcon(monLogo));
             pic.setPreferredSize(new Dimension(200, 200));
@@ -39,28 +41,13 @@ public class Login extends JFrame {
             // Affichage erreur en cas de problème
             e.printStackTrace();
         }
-        InitialisationFenetre();
-        buttonSubmit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                initConnexion();
-            }
-        });
     }
 
-    private void InitialisationFenetre() {
-        this.setTitle("DOCTO2I - Login");
-        this.setSize(400, 550);
-        this.setLocationRelativeTo(null);
-        this.getContentPane().setBackground(Color.ORANGE);
-        //this.add(panel1);
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setVisible(true);
-    }
-
+    // Requete de connexion de l'utilisateur
     private void initConnexion() {
         final EntityManagerFactory emf = Persistence.createEntityManagerFactory("Docto2IPU");
         final EntityManager em = emf.createEntityManager();
+
         try {
             HP hp = em.createNamedQuery("HP.login", HP.class)
                     .setParameter("login", loginTextField.getText())
@@ -72,8 +59,31 @@ public class Login extends JFrame {
                 this.dispose();
             }
         } catch(Exception e) {
-            JOptionPane.showMessageDialog(null, "Login ou mot de passe incorrect", "Erreur", JOptionPane.ERROR_MESSAGE);
+            System.out.println(e);
+            JOptionPane.showMessageDialog(null, "Login ou mot de passe incorrect",
+                    "Erreur", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    // Initialisation de la fenêtre
+    private void initialisationFenetre() {
+        this.setTitle("DOCTO2I - Login");
+        this.setSize(400, 550);
+        this.setLocationRelativeTo(null);
+        this.getContentPane().setBackground(Color.ORANGE);
+        //this.add(panel1);
+        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.setVisible(true);
+    }
+
+    // Ajout d'un Listener sur le bouton de validation de connexion
+    private void listenerConnexion() {
+        buttonSubmit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                initConnexion();
+            }
+        });
     }
 
     public static void main(String[] args) {
