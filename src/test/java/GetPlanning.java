@@ -1,4 +1,5 @@
 import jakarta.persistence.*;
+import modele.RendezVous;
 import modele.people.Doctor;
 import modele.planning.Planning;
 import modele.planning.PlanningJournee;
@@ -12,15 +13,25 @@ public class GetPlanning {
         final EntityManager em = emf.createEntityManager();
 
         try {
-            final EntityTransaction et =em.getTransaction();
+            final EntityTransaction et = em.getTransaction();
             try {
                 et.begin();
 
-                Query query = em.createNamedQuery("Planning.getJourneesById");
+                /*Query query = em.createNamedQuery("Planning.getJourneesById");
                 query.setParameter("id", 1);
 
                 List<PlanningJournee> list =  query.getResultList();
                 for(PlanningJournee pj : list) {
+                    System.out.println(pj);
+                }*/
+
+                Query query = em.createNamedQuery("Planning.getJourneeOfDoctorByDate");
+                query.setParameter("planningid", 1);
+                query.setParameter("date", "20231101");
+                query.setParameter("doctorid", 4);
+
+                List<RendezVous> list =  query.getResultList();
+                for(RendezVous pj : list) {
                     System.out.println(pj);
                 }
 

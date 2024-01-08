@@ -10,11 +10,10 @@ import jakarta.persistence.*;
                 query = "SELECT pj FROM PlanningJournee pj JOIN pj.planning p WHERE p.id = :id"
         ),
         @NamedQuery(name = "Planning.getJourneeOfDoctorByDate",
-                query = "SELECT pj.rendezVous FROM RendezVous rv JOIN PlanningJournee pj " +
-                        "JOIN pj.planning p JOIN Doctor d ON rv.doctor = d " +
-                        "WHERE p.id = :planningid " +
-                        "AND d.id = :doctorid " +
-                        "AND pj.date = :date"
+                query = "SELECT rv FROM RendezVous rv JOIN FETCH PlanningJournee pj JOIN FETCH Doctor d ON rv.doctor = d JOIN FETCH Planning p " +
+                        "WHERE rv.planningJournee.planning.id = :planningid " +
+                        "AND rv.doctor.id = :doctorid " +
+                        "AND rv.planningJournee.date = :date"
         ),
         @NamedQuery(name = "Planning.getJourneeOfSalleByDate",
                 query = "SELECT pj.rendezVous FROM RendezVous rv JOIN PlanningJournee pj JOIN pj.planning p JOIN Salle s ON rv.salle = s " +
