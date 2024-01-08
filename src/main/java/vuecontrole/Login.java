@@ -26,21 +26,26 @@ public class Login extends JFrame {
     public Login() throws HeadlessException {
         setContentPane(panelLogin);
         initialisationFenetre();
-        chargementLogo();
+        //chargementLogo();
         listenerConnexion();
     }
 
     // Chargement du logo visible sur la page de login
     private void chargementLogo() {
-        try {
-            BufferedImage monLogo = ImageIO.read(new File("src/main/resources/images/logo.png"));
-            JLabel pic = new JLabel(new ImageIcon(monLogo));
-            pic.setPreferredSize(new Dimension(200, 200));
-            logo.add(pic, BorderLayout.CENTER);
-        } catch (Exception e) {
-            // Affichage erreur en cas de problème
-            e.printStackTrace();
-        }
+        // Récupération de l'image
+        ImageIcon logo = new ImageIcon("src/main/resources/logo.png");
+
+        // Redimensionnement de l'image
+        Image img = logo.getImage();
+        Image imgScaled = img.getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+        ImageIcon imgIsScaled = new ImageIcon(imgScaled);
+
+        // Ajout de l'image au panel
+        this.logo = new JLabel(imgIsScaled);
+        panelLogin.add(this.logo);
+        //panelLogin.repaint();
+        //panelLogin.revalidate();
+
     }
 
     // Requete de connexion de l'utilisateur
@@ -71,7 +76,6 @@ public class Login extends JFrame {
         this.setSize(400, 550);
         this.setLocationRelativeTo(null);
         this.getContentPane().setBackground(Color.ORANGE);
-        //this.add(panel1);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setVisible(true);
     }

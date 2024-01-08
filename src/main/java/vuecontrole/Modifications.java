@@ -1,8 +1,9 @@
 package vuecontrole;
 
 import javax.swing.*;
+import java.awt.*;
 
-public class Modifications {
+public class Modifications extends JFrame {
     private JLabel nomOnglet;
     private JTabbedPane selectionModifs;
     private JComboBox salleLibreCombo;
@@ -17,12 +18,23 @@ public class Modifications {
     private JButton confirmerChgtButton;
     private JComboBox medecinLibreCombo;
     private JLabel horaireChgt;
+    private JPanel panelModifs;
 
     public Modifications() {
+        this.setContentPane(panelModifs);
         initialisationFenetre();
     }
 
     private void initialisationFenetre() {
-        // TODO : initialisation de la fenêtre
+        this.setTitle("Docto2IPU");
+        this.setSize(800, 600);
+        this.setLocationRelativeTo(null);
+        this.getContentPane().setBackground(Color.ORANGE);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        Modifications modifs = new Modifications();
     }
 }

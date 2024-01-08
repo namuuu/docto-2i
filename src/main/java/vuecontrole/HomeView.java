@@ -161,8 +161,9 @@ public class HomeView extends JFrame {
         query.setParameter("planningid", 1);
         query.setParameter("doctorid", hp.getId());
         //query.setParameter("doctorid", 4);
+        System.out.println(date.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
         query.setParameter("date", date.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
-        //query.setParameter("date", "20231101");
+        //query.setParameter("date", "20231226");
 
         List<RendezVous> planningDocteur = query.getResultList();
         planningDocteur.sort(Comparator.comparing(rv -> rv.getCreneau().getStartHour()));
