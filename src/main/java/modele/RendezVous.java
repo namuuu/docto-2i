@@ -3,6 +3,7 @@ package modele;
 import jakarta.persistence.*;
 import modele.people.Doctor;
 import modele.people.Patient;
+import modele.planning.PlanningJournee;
 
 @Entity
 public class RendezVous {
@@ -18,6 +19,8 @@ public class RendezVous {
     private Salle salle;
     @OneToOne
     private Doctor doctor;
+    @ManyToOne
+    private PlanningJournee planningJournee;
 
     public RendezVous() {
     }
@@ -43,6 +46,14 @@ public class RendezVous {
 
     public Doctor getDoctor() {
         return doctor;
+    }
+
+    public PlanningJournee getPlanningJournee() {
+        return planningJournee;
+    }
+
+    public void setPlanningJournee(PlanningJournee planningJournee) {
+        this.planningJournee = planningJournee;
     }
 
     @Override

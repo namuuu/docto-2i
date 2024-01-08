@@ -56,6 +56,7 @@ public class Doctor extends HP {
         return "Doctor{" +
                 "firstname='" + super.getFirstname() + '\'' +
                 ", name='" + super.getName() + '\'' +
+                ", id=" + super.getId() +
                 ", healthProfessionalNumber=" + healthProfessionalNumber +
                 ", intern=" + intern +
                 '}';

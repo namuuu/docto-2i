@@ -39,7 +39,7 @@ public class PlanningJournee {
     @ManyToMany
     private List<Salle> salles = new ArrayList<>();
 
-    @ManyToMany
+    @OneToMany
     private List<RendezVous> rendezVous = new ArrayList<>();
 
     public PlanningJournee() {
@@ -53,6 +53,10 @@ public class PlanningJournee {
         this.managers = managers;
         this.salles = salles;
         this.rendezVous = rendezVous;
+
+        for(RendezVous rv : rendezVous) {
+            rv.setPlanningJournee(this);
+        }
     }
 
     public int getId() {

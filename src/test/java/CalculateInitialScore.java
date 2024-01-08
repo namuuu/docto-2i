@@ -1,8 +1,4 @@
-import jakarta.persistence.*;
-import modele.planning.PlanningJournee;
 import modele.score.Score;
-
-import java.util.List;
 
 public class CalculateInitialScore {
 
