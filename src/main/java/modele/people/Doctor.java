@@ -6,7 +6,15 @@ import modele.HP;
 import java.util.Date;
 
 @Entity
+@NamedQueries(
+        @NamedQuery(
+                name = "Doctor.getAllDoctors",
+                query = "SELECT d FROM Doctor d"
+        )
+)
 public class Doctor extends HP {
+
+
 
     @Column(
             name = "health_professional_number"
@@ -48,6 +56,7 @@ public class Doctor extends HP {
         return "Doctor{" +
                 "firstname='" + super.getFirstname() + '\'' +
                 ", name='" + super.getName() + '\'' +
+                ", id=" + super.getId() +
                 ", healthProfessionalNumber=" + healthProfessionalNumber +
                 ", intern=" + intern +
                 '}';
