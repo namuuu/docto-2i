@@ -16,10 +16,10 @@ import jakarta.persistence.*;
                         "AND rv.planningJournee.date = :date"
         ),
         @NamedQuery(name = "Planning.getJourneeOfSalleByDate",
-                query = "SELECT pj.rendezVous FROM RendezVous rv JOIN PlanningJournee pj JOIN pj.planning p JOIN Salle s ON rv.salle = s " +
-                        "WHERE p.id = :planningid " +
-                        "AND s.numero = :sallenum " +
-                        "AND pj.date = :date"
+                query = "SELECT rv FROM RendezVous rv JOIN FETCH PlanningJournee pj JOIN FETCH Salle s ON rv.salle = s JOIN FETCH Planning p " +
+                        "WHERE rv.planningJournee.planning.id = :planningid " +
+                        "AND rv.salle.numero = :sallenum " +
+                        "AND rv.planningJournee.date = :date"
         ),
         @NamedQuery(name = "Planning.getAllVersion",
                 query = "SELECT p FROM Planning p"
