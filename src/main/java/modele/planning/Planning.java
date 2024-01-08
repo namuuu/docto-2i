@@ -14,6 +14,23 @@ import jakarta.persistence.*;
                         "WHERE rv.planningJournee.planning.id = :planningid " +
                         "AND rv.doctor.id = :doctorid " +
                         "AND rv.planningJournee.date = :date"
+        ),
+        @NamedQuery(name = "Planning.getJourneeOfSalleByDate",
+                query = "SELECT pj.rendezVous FROM RendezVous rv JOIN PlanningJournee pj JOIN pj.planning p JOIN Salle s ON rv.salle = s " +
+                        "WHERE p.id = :planningid " +
+                        "AND s.numero = :sallenum " +
+                        "AND pj.date = :date"
+        ),
+        @NamedQuery(name = "Planning.getAllVersion",
+                query = "SELECT p FROM Planning p"
+        ),
+        @NamedQuery(name = "Planning.getSalleLibre",
+                query = "SELECT s FROM Salle s WHERE s.numero " +
+                        "NOT IN (SELECT rv.salle.numero " +
+                                "FROM RendezVous rv JOIN PlanningJournee pj " +
+                                "JOIN pj.planning p " +
+                                "JOIN rv.creneau c " +
+                                "WHERE p.id = :planningid AND pj.date = :date AND c.startHour = :starthour )"
         )
 })
 @Entity

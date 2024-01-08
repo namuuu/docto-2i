@@ -2,6 +2,11 @@ package modele;
 
 import jakarta.persistence.*;
 
+
+@NamedQuery(name = "Salle.getAll",
+        query = "SELECT s FROM Salle s"
+)
+
 @Entity
 public class Salle {
 
@@ -40,7 +45,7 @@ public class Salle {
     @Override
     public String toString() {
         return "Salle{" +
-                ", numero=" + numero +
+                "numero=" + numero +
                 ", nom='" + nom + '\'' +
                 '}';
     }

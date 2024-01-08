@@ -1,6 +1,8 @@
 package modele;
 
 import jakarta.persistence.*;
+import modele.people.Doctor;
+import modele.people.Manager;
 
 import java.util.Date;
 
@@ -57,6 +59,16 @@ public abstract class HP extends Person {
     public String getAddress() { return address; }
 
     public void setAddress(String address) { this.address = address; }
+
+    // Retourne 0 si c'est un docteur, 1 si c'est un manager, -1 si c'est autre chose
+    public int isDoctorOrManager() {
+        if (this instanceof Doctor) {
+            return 0;
+        } else if (this instanceof Manager) {
+            return 1;
+        }
+        return -1;
+    }
 
     @Override
     public String toString() {
