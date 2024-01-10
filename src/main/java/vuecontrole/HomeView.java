@@ -118,10 +118,9 @@ public class HomeView extends JFrame {
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn("Heure");
         model.addColumn("Jour");
-        model.addRow(new Object[]{"Heure", "Rendez-vous"});
-        /*for(int i = 8; i < 22; i++) {
-            model.addRow(new Object[]{i + "h00", "Rendez-vous n°" + i + " - Patient n°" + i + " - Salle n°" + i});
-        }*/
+
+        this.getPlanningGlobal(model, LocalDate.now());
+
         tablePlanningGlobal.setModel(model);
         tablePlanningGlobal.getColumnModel().getColumn(0).setPreferredWidth(150);
         tablePlanningGlobal.getColumnModel().getColumn(1).setPreferredWidth(750);
@@ -130,6 +129,7 @@ public class HomeView extends JFrame {
     private void initialisationTableauPlanningSalle(){
         tablePlanningSalle.setEnabled(false);
         tablePlanningSalle.setRowHeight(50);
+        tablePlanningSalle.setTableHeader(null);
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn("Heure");
         model.addColumn("Jour");
@@ -220,13 +220,36 @@ public class HomeView extends JFrame {
                 model.addRow(new Object[]{rv.getCreneau().getStartHour() + "h00",
                         " Patient " + rv.getPatient().getFirstname() + " " + rv.getPatient().getName()
                         + " - Salle n°" + rv.getSalle().getNumero() + " - " + rv.getSalle().getNom()
-                        + "- Docteur " + rv.getDoctor().getFirstname() + " " + rv.getDoctor().getName()
+                        + " - Docteur " + rv.getDoctor().getFirstname() + " " + rv.getDoctor().getName()
                 });
             }
         } else if(planningSalle.toArray().length == 0) {
             model.addRow(new Object[]{"Heure", "Aucun rendez-vous"});
         } else {
             JOptionPane.showMessageDialog(this, "Echec du chargement du planning !");
+        }
+    }
+
+    private void getPlanningGlobal(DefaultTableModel model, LocalDate date) {
+        final EntityManagerFactory emf = Persistence.createEntityManagerFactory("Docto2IPU");
+        final EntityManager em = emf.createEntityManager();
+        Query query = em.createNamedQuery("Planning.getAllRdv");
+        query.setParameter("planningid", 1);
+        query.setParameter("date", "20231226");
+
+        List<RendezVous> planningGlobal =  query.getResultList();
+        planningGlobal.sort(Comparator.comparing(rv -> rv.getCreneau().getStartHour()));
+        if(planningGlobal.toArray().length == 0) {
+            model.addRow(new Object[]{"Heure", "Aucun rendez-vous"});
+        } else {
+            model.addRow(new Object[]{"Heure", "Rendez-vous"});
+            for(RendezVous r : planningGlobal) {
+                model.addRow(new Object[]{r.getCreneau().getStartHour() + "h00",
+                        " Patient " + r.getPatient().getFirstname() + " " + r.getPatient().getName()
+                                + " - Salle n°" + r.getSalle().getNumero() + " - " + r.getSalle().getNom()
+                                + " - Docteur " + r.getDoctor().getFirstname() + " " + r.getDoctor().getName()
+                });
+            }
         }
     }
 

@@ -25,17 +25,22 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="14ce2" class="javax.swing.JTable" binding="tablePlanningGlobal">
+              <scrollpane id="fd93a">
                 <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="1" fill="0" indent="0" use-parent-layout="false">
-                    <preferred-size width="500" height="50"/>
-                  </grid>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                 </constraints>
-                <properties>
-                  <font size="14" style="1"/>
-                  <foreground color="-13947600"/>
-                </properties>
-              </component>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="14ce2" class="javax.swing.JTable" binding="tablePlanningGlobal">
+                    <constraints/>
+                    <properties>
+                      <font size="14" style="1"/>
+                      <foreground color="-13947600"/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
             </children>
           </grid>
           <grid id="3d2f9" binding="nomDocteur" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
@@ -96,6 +101,7 @@
                       <autoCreateRowSorter value="false"/>
                       <fillsViewportHeight value="false"/>
                       <font size="14" style="1"/>
+                      <showHorizontalLines value="true"/>
                       <updateSelectionOnSort value="true"/>
                     </properties>
                   </component>

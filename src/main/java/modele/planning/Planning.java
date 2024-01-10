@@ -31,6 +31,11 @@ import jakarta.persistence.*;
                                 "JOIN pj.planning p " +
                                 "JOIN rv.creneau c " +
                                 "WHERE p.id = :planningid AND pj.date = :date AND c.startHour = :starthour )"
+        ),
+        @NamedQuery(name = "Planning.getAllRdv",
+                query = "SELECT rv FROM RendezVous rv JOIN FETCH PlanningJournee pj JOIN FETCH Planning p " +
+                        "WHERE rv.planningJournee.planning.id = :planningid " +
+                        "AND rv.planningJournee.date = :date"
         )
 })
 @Entity
