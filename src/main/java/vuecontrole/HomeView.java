@@ -17,37 +17,38 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
 
 public class HomeView extends JFrame {
+    /** Attributs fenêtre **/
+    private JLabel labelDoctorName, labelDate, rechercheSalle, rechercheDocteur, labelNameApp;
+    private JPanel panelPlanning, jLabelRechercheSalle, nomDocteur, nomOnglet;
+    private JTable tablePlanningGlobal, tablePlanningDocteur, tablePlanningSalle;
+    private JButton logoutButton, validerRechercheDocteur, optimiserButton, validerRechercheSalle;
     private JTabbedPane selectionPlanning;
-    private JPanel panelPlanning;
-    private JTable tablePlanningGlobal;
-    private JLabel labelNameApp;
-    private JLabel labelDoctorName;
-    private JButton logoutButton;
-    private JTable tablePlanningDocteur;
-    private JTable tablePlanningSalle;
-    private JLabel LabelDate;
-    private JSpinner spinner;
-    private JPanel jLabelRechercheSalle;
-    private JLabel rechercheSalle;
-    private JButton validerRecherche;
-    private JComboBox salleCombo;
-    private JComboBox planningCombo;
-    private JPanel nomDocteur;
-    private JPanel nomOnglet;
+    private JComboBox salleCombo, planningCombo, docteurCombo;
     private JScrollPane scrollTableSalle;
-    private HP hp;
-    private String date;
 
+    /** Attribut de gestion **/
+    private HP hp;
+    private String date = "20231226";
+    private EntityManagerFactory emf;
+    private EntityManager em;
+    private int planningId;
+
+    // Constructeur par défaut
     public HomeView() {
+        this.initEntityManager();
         String date = new SimpleDateFormat("EEEE dd MMMM yyyy", Locale.FRENCH).format(new Date());
         this.hp = null;
-        this.LabelDate.setText(date.toString());
+        this.labelDate.setText(date);
         setContentPane(panelPlanning);
+
+        this.initSalleCombo();
+        this.initPlanningCombo();
+        this.recupererVersionPlanning();
+
         logoutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -55,15 +56,29 @@ public class HomeView extends JFrame {
                 dispose();
             }
         });
-        validerRecherche.addActionListener(new ActionListener() {
+        validerRechercheSalle.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 initialisationTableauPlanningSalle();
             }
         });
 
-        initSalleCombo();
-        initPlanningCombo();
+        validerRechercheDocteur.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String docteurId = Objects.requireNonNull(docteurCombo.getSelectedItem()).toString();
+                String[] docteurIdSplit = docteurId.split(" - ");
+                initialisationTableauPlanningDocteur(Integer.parseInt(docteurIdSplit[0]));
+            }
+        });
+
+        planningCombo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                recupererVersionPlanning();
+                reinitTableau();
+            }
+        });
 
     }
 
@@ -74,15 +89,38 @@ public class HomeView extends JFrame {
         if(this.hp.isDoctorOrManager() == 0) {
             this.selectionPlanning.remove(0);
             this.selectionPlanning.remove(1);
-        } else {
-            initialisationTableauPlanningGlobal();
+            this.initialisationTableauPlanningDocteur(0);
+            this.desacRechercheMedecin();
+        } else if (this.hp.isDoctorOrManager() == 1) {
+            this.initialisationTableauPlanningGlobal();
+            this.initDocteurCombo();
         }
-        initialisationFenetre();
-        initialisationTableauPlanningDocteur();
-        centerTable();
+        this.initialisationFenetre();
+        this.centerTable();
     }
 
-    public void centerTable() {
+    private void reinitTableau() {
+        if(this.hp.isDoctorOrManager() == 0) {
+            this.initialisationTableauPlanningDocteur(0);
+        } else if (this.hp.isDoctorOrManager() == 1) {
+            this.initialisationTableauPlanningGlobal();
+        }
+    }
+
+    private void recupererVersionPlanning() {
+        // Récupérer la string sélectionné (ex:"PlanningVX") et ne garder que la valeur X
+        String planning = Objects.requireNonNull(planningCombo.getSelectedItem()).toString();
+        String[] planningSplit = planning.split("V");
+        this.planningId = Integer.parseInt(planningSplit[1]);
+        System.out.println(this.planningId);
+    }
+
+    private void initEntityManager() {
+        this.emf = Persistence.createEntityManagerFactory("Docto2IPU");
+        this.em = emf.createEntityManager();
+    }
+
+    private void centerTable() {
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment( JLabel.CENTER );
         tablePlanningSalle.setDefaultRenderer(Object.class, centerRenderer);
@@ -90,9 +128,25 @@ public class HomeView extends JFrame {
         tablePlanningGlobal.setDefaultRenderer(Object.class, centerRenderer);
     }
 
+    private void desacRechercheMedecin() {
+        rechercheDocteur.setVisible(false);
+        docteurCombo.setVisible(false);
+        validerRechercheDocteur.setVisible(false);
+    }
+
+    private void initDocteurCombo() {
+
+            Query query = em.createNamedQuery("Doctor.getDoctorsOfDay");
+            query.setParameter("planningid", this.planningId);
+            query.setParameter("date", date);
+
+            List<HP> docteurs =  query.getResultList();
+            for(HP d : docteurs) {
+                docteurCombo.addItem(d.getId() + " - " + d.getFirstname() + " " + d.getName());
+            }
+    }
+
     private void initSalleCombo() {
-        final EntityManagerFactory emf = Persistence.createEntityManagerFactory("Docto2IPU");
-        final EntityManager em = emf.createEntityManager();
         Query query = em.createNamedQuery("Salle.getAll");
 
         List<Salle> list =  query.getResultList();
@@ -102,8 +156,6 @@ public class HomeView extends JFrame {
     }
 
     private void initPlanningCombo() {
-        final EntityManagerFactory emf = Persistence.createEntityManagerFactory("Docto2IPU");
-        final EntityManager em = emf.createEntityManager();
         Query query = em.createNamedQuery("Planning.getAllVersion");
 
         List<Planning> list =  query.getResultList();
@@ -141,14 +193,19 @@ public class HomeView extends JFrame {
         tablePlanningSalle.getColumnModel().getColumn(1).setPreferredWidth(750);
     }
 
-    private void initialisationTableauPlanningDocteur(){
+    private void initialisationTableauPlanningDocteur(int hp){
+
         tablePlanningDocteur.setEnabled(false);
         tablePlanningDocteur.setRowHeight(50);
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn("Heure");
         model.addColumn("Jour");
 
-        this.getPlanningDocteur(model, hp, LocalDate.now());
+        if(hp == 0) {
+            this.getPlanningDocteur(model, this.hp.getId(), LocalDate.now());
+        } else {
+            this.getPlanningDocteur(model, hp, LocalDate.now());
+        }
 
         tablePlanningDocteur.setModel(model);
         tablePlanningDocteur.getColumnModel().getColumn(0).setPreferredWidth(150);
@@ -164,19 +221,14 @@ public class HomeView extends JFrame {
         this.setVisible(true);
     }
 
-    private void getPlanningDocteur(DefaultTableModel model, HP hp, LocalDate date) {
-        final EntityManagerFactory emf = Persistence.createEntityManagerFactory("Docto2IPU");
-        final EntityManager em = emf.createEntityManager();
+    private void getPlanningDocteur(DefaultTableModel model, int hp, LocalDate date) {
+
         Query query = em.createNamedQuery("Planning.getJourneeOfDoctorByDate");
 
-        // Test avec une date en dur, prévoir quand aucun planning pour la journée !
-        //query.setParameter("planningid", 1);
-        query.setParameter("planningid", 1);
-        query.setParameter("doctorid", hp.getId());
-        //query.setParameter("doctorid", 4);
-        System.out.println(date.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
-        //query.setParameter("date", date.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
-        query.setParameter("date", "20231226");
+
+        query.setParameter("planningid", this.planningId);
+        query.setParameter("doctorid", hp);
+        query.setParameter("date", this.date);
 
         List<RendezVous> planningDocteur = query.getResultList();
         planningDocteur.sort(Comparator.comparing(rv -> rv.getCreneau().getStartHour()));
@@ -198,18 +250,16 @@ public class HomeView extends JFrame {
 
     private void getPlanningSalle(DefaultTableModel model, LocalDate date) {
 
-        final EntityManagerFactory emf = Persistence.createEntityManagerFactory("Docto2IPU");
-        final EntityManager em = emf.createEntityManager();
         Query query = em.createNamedQuery("Planning.getJourneeOfSalleByDate");
 
-        query.setParameter("planningid", 1);
+        query.setParameter("planningid", this.planningId);
 
         // Récupérer l'élement sélectionné dans la combobox
         String salle = salleCombo.getSelectedItem().toString();
         String[] salleSplit = salle.split(" - ");
         query.setParameter("sallenum", Integer.parseInt(salleSplit[0]));
         //query.setParameter("date", date.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
-        query.setParameter("date", "20231226");
+        query.setParameter("date", this.date);
 
         List<RendezVous> planningSalle = query.getResultList();
         planningSalle.sort(Comparator.comparing(rv -> rv.getCreneau().getStartHour()));
@@ -231,11 +281,10 @@ public class HomeView extends JFrame {
     }
 
     private void getPlanningGlobal(DefaultTableModel model, LocalDate date) {
-        final EntityManagerFactory emf = Persistence.createEntityManagerFactory("Docto2IPU");
-        final EntityManager em = emf.createEntityManager();
+
         Query query = em.createNamedQuery("Planning.getAllRdv");
-        query.setParameter("planningid", 1);
-        query.setParameter("date", "20231226");
+        query.setParameter("planningid", this.planningId);
+        query.setParameter("date", this.date);
 
         List<RendezVous> planningGlobal =  query.getResultList();
         planningGlobal.sort(Comparator.comparing(rv -> rv.getCreneau().getStartHour()));

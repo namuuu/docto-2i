@@ -6,12 +6,18 @@ import modele.HP;
 import java.util.Date;
 
 @Entity
-@NamedQueries(
+@NamedQueries({
         @NamedQuery(
                 name = "Doctor.getAllDoctors",
                 query = "SELECT d FROM Doctor d"
+        ),
+        @NamedQuery(
+                name="Doctor.getDoctorsOfDay",
+                query = "SELECT d FROM Doctor d JOIN FETCH PlanningJournee pj JOIN FETCH Planning p " +
+                        "WHERE pj.planning.id = :planningid " +
+                        "AND pj.date = :date"
         )
-)
+})
 public class Doctor extends HP {
 
 
