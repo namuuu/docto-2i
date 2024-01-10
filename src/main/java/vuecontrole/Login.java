@@ -14,14 +14,13 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 
 public class Login extends JFrame {
+    /** Attributs Fenêtre **/
     private JPasswordField passwordField;
     private JPanel panelLogin;
     private JTextField loginTextField;
-    private JLabel pageName;
     private JButton buttonSubmit;
-    private JLabel labelLogin;
-    private JLabel labelPassword;
-    private JLabel logo;
+    private JLabel labelLogin, pageName, logo, labelPassword;
+
 
     public Login() throws HeadlessException {
         setContentPane(panelLogin);
@@ -64,9 +63,10 @@ public class Login extends JFrame {
                 this.dispose();
             }
         } catch(Exception e) {
-            System.out.println(e);
+            //System.out.println(e);
             JOptionPane.showMessageDialog(null, "Login ou mot de passe incorrect",
                     "Erreur", JOptionPane.ERROR_MESSAGE);
+            throw new RuntimeException(e);
         }
     }
 
