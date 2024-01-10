@@ -18,6 +18,7 @@ public class FillDatabase {
                 DataReader dr = new DataReader();
                 ReadData readData = dr.readFiles("./src/main/resources/instances");
                 dr.importData(em, readData);
+                System.out.println("Data successfully imported!");
 
                 et.commit();
             } catch (Exception e) {

@@ -11,7 +11,7 @@ public class Patient extends Person {
     @Column(
             name = "request_type"
     )
-    private boolean request_type;
+    private boolean specialized;
 
     @Column(
             name = "identifier"
@@ -23,16 +23,20 @@ public class Patient extends Person {
 
     public Patient(String firstname, String name, Date birthdate, boolean request_type, Integer identifier) {
         super(firstname, name, birthdate);
-        this.request_type = request_type;
+        this.specialized = request_type;
         this.identifier = identifier;
     }
 
-    public boolean isRequest_type() {
-        return request_type;
+    /**
+     * Defines if the request needs a specialized doctor or not
+     * @return true if the request needs a specialized doctor, false otherwise
+     */
+    public boolean isSpecialized() {
+        return specialized;
     }
 
-    public void setRequest_type(boolean request_type) {
-        this.request_type = request_type;
+    public void setSpecialized(boolean specialized) {
+        this.specialized = specialized;
     }
 
     @Override
@@ -40,7 +44,7 @@ public class Patient extends Person {
         return "Patient{" +
                 "firstname='" + super.getFirstname() + '\'' +
                 ", name='" + super.getName() + '\'' +
-                ", request_type=" + request_type +
+                ", request_type=" + specialized +
                 ", identifier=" + identifier +
                 '}';
     }
