@@ -10,6 +10,7 @@ import modele.Salle;
 import modele.planning.Planning;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -38,6 +39,7 @@ public class HomeView extends JFrame {
     private JComboBox planningCombo;
     private JPanel nomDocteur;
     private JPanel nomOnglet;
+    private JScrollPane scrollTableSalle;
     private HP hp;
     private String date;
 
@@ -62,19 +64,30 @@ public class HomeView extends JFrame {
 
         initSalleCombo();
         initPlanningCombo();
+
     }
 
     public HomeView(HP hp) throws HeadlessException {
         this();
         this.hp = hp;
         this.labelDoctorName.setText(hp.getFirstname() + " " + hp.getName());
-        if(this.hp.isDoctorOrManager() == 1) {
+        if(this.hp.isDoctorOrManager() == 0) {
+            this.selectionPlanning.remove(0);
             this.selectionPlanning.remove(1);
         } else {
-            initialisationTableauPlanningDocteur();
+            initialisationTableauPlanningGlobal();
         }
         initialisationFenetre();
-        initialisationTableauPlanningGlobal();
+        initialisationTableauPlanningDocteur();
+        centerTable();
+    }
+
+    public void centerTable() {
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment( JLabel.CENTER );
+        tablePlanningSalle.setDefaultRenderer(Object.class, centerRenderer);
+        tablePlanningDocteur.setDefaultRenderer(Object.class, centerRenderer);
+        tablePlanningGlobal.setDefaultRenderer(Object.class, centerRenderer);
     }
 
     private void initSalleCombo() {
@@ -105,10 +118,9 @@ public class HomeView extends JFrame {
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn("Heure");
         model.addColumn("Jour");
-        model.addRow(new Object[]{"Heure", "Rendez-vous"});
-        /*for(int i = 8; i < 22; i++) {
-            model.addRow(new Object[]{i + "h00", "Rendez-vous n°" + i + " - Patient n°" + i + " - Salle n°" + i});
-        }*/
+
+        this.getPlanningGlobal(model, LocalDate.now());
+
         tablePlanningGlobal.setModel(model);
         tablePlanningGlobal.getColumnModel().getColumn(0).setPreferredWidth(150);
         tablePlanningGlobal.getColumnModel().getColumn(1).setPreferredWidth(750);
@@ -117,6 +129,7 @@ public class HomeView extends JFrame {
     private void initialisationTableauPlanningSalle(){
         tablePlanningSalle.setEnabled(false);
         tablePlanningSalle.setRowHeight(50);
+        tablePlanningSalle.setTableHeader(null);
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn("Heure");
         model.addColumn("Jour");
@@ -162,8 +175,8 @@ public class HomeView extends JFrame {
         query.setParameter("doctorid", hp.getId());
         //query.setParameter("doctorid", 4);
         System.out.println(date.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
-        query.setParameter("date", date.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
-        //query.setParameter("date", "20231226");
+        //query.setParameter("date", date.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+        query.setParameter("date", "20231226");
 
         List<RendezVous> planningDocteur = query.getResultList();
         planningDocteur.sort(Comparator.comparing(rv -> rv.getCreneau().getStartHour()));
@@ -184,6 +197,7 @@ public class HomeView extends JFrame {
     }
 
     private void getPlanningSalle(DefaultTableModel model, LocalDate date) {
+
         final EntityManagerFactory emf = Persistence.createEntityManagerFactory("Docto2IPU");
         final EntityManager em = emf.createEntityManager();
         Query query = em.createNamedQuery("Planning.getJourneeOfSalleByDate");
@@ -194,7 +208,8 @@ public class HomeView extends JFrame {
         String salle = salleCombo.getSelectedItem().toString();
         String[] salleSplit = salle.split(" - ");
         query.setParameter("sallenum", Integer.parseInt(salleSplit[0]));
-        query.setParameter("date", date.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+        //query.setParameter("date", date.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+        query.setParameter("date", "20231226");
 
         List<RendezVous> planningSalle = query.getResultList();
         planningSalle.sort(Comparator.comparing(rv -> rv.getCreneau().getStartHour()));
@@ -204,13 +219,37 @@ public class HomeView extends JFrame {
             for (RendezVous rv : planningSalle) {
                 model.addRow(new Object[]{rv.getCreneau().getStartHour() + "h00",
                         " Patient " + rv.getPatient().getFirstname() + " " + rv.getPatient().getName()
-                                + " - Salle n°" + rv.getSalle().getNumero() + " - " + rv.getSalle().getNom()
+                        + " - Salle n°" + rv.getSalle().getNumero() + " - " + rv.getSalle().getNom()
+                        + " - Docteur " + rv.getDoctor().getFirstname() + " " + rv.getDoctor().getName()
                 });
             }
         } else if(planningSalle.toArray().length == 0) {
             model.addRow(new Object[]{"Heure", "Aucun rendez-vous"});
         } else {
             JOptionPane.showMessageDialog(this, "Echec du chargement du planning !");
+        }
+    }
+
+    private void getPlanningGlobal(DefaultTableModel model, LocalDate date) {
+        final EntityManagerFactory emf = Persistence.createEntityManagerFactory("Docto2IPU");
+        final EntityManager em = emf.createEntityManager();
+        Query query = em.createNamedQuery("Planning.getAllRdv");
+        query.setParameter("planningid", 1);
+        query.setParameter("date", "20231226");
+
+        List<RendezVous> planningGlobal =  query.getResultList();
+        planningGlobal.sort(Comparator.comparing(rv -> rv.getCreneau().getStartHour()));
+        if(planningGlobal.toArray().length == 0) {
+            model.addRow(new Object[]{"Heure", "Aucun rendez-vous"});
+        } else {
+            model.addRow(new Object[]{"Heure", "Rendez-vous"});
+            for(RendezVous r : planningGlobal) {
+                model.addRow(new Object[]{r.getCreneau().getStartHour() + "h00",
+                        " Patient " + r.getPatient().getFirstname() + " " + r.getPatient().getName()
+                                + " - Salle n°" + r.getSalle().getNumero() + " - " + r.getSalle().getNom()
+                                + " - Docteur " + r.getDoctor().getFirstname() + " " + r.getDoctor().getName()
+                });
+            }
         }
     }
 
