@@ -110,8 +110,8 @@ public class Score {
 
                 et.commit();
             } catch (Exception e) {
-                System.err.println(e);
                 et.rollback();
+                throw new RuntimeException(e);
             }
         } finally {
             if (em != null && em.isOpen())
@@ -128,5 +128,12 @@ public class Score {
 
     public Planning getOldPlanning() {
         return oldPlanning;
+    }
+
+    public static void main(String[] args) {
+        Score oldScore = new Score(1);
+        oldScore.calculateInitialScore();
+        Score score = new Score(2);
+        score.calculateInitialScore();
     }
 }

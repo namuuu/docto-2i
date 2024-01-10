@@ -94,7 +94,6 @@ public class DataReader {
         em.persist(data.getPlanning());
 
         for(PlanningJournee planningJournee: data.getPlanningJournees()) {
-            System.out.println(planningJournee.getDoctors());
             em.persist(planningJournee);
             for(RendezVous rendezVous: planningJournee.getRendezVous()) {
                 em.persist(rendezVous.getPatient());
