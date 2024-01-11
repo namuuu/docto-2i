@@ -22,32 +22,37 @@ import java.util.List;
 
 public class HomeView extends JFrame {
     /** Attributs fenêtre **/
-    private JLabel labelDoctorName, labelDate, rechercheSalle, rechercheDocteur, labelNameApp;
+    private JLabel labelDoctorName, rechercheSalle, rechercheDocteur, labelNameApp;
     private JPanel panelPlanning, jLabelRechercheSalle, nomDocteur, nomOnglet;
     private JTable tablePlanningGlobal, tablePlanningDocteur, tablePlanningSalle;
     private JButton logoutButton, validerRechercheDocteur, optimiserButton, validerRechercheSalle;
     private JTabbedPane selectionPlanning;
     private JComboBox salleCombo, planningCombo, docteurCombo;
     private JScrollPane scrollTableSalle;
+    private JComboBox comboDate;
 
     /** Attribut de gestion **/
     private HP hp;
-    private String date = "20231226";
     private EntityManagerFactory emf;
     private EntityManager em;
     private int planningId;
+    private String date = "20231101";
+    private String dateFormated;
 
     // Constructeur par défaut
     public HomeView() {
         this.initEntityManager();
-        String date = new SimpleDateFormat("EEEE dd MMMM yyyy", Locale.FRENCH).format(new Date());
         this.hp = null;
-        this.labelDate.setText(date);
         setContentPane(panelPlanning);
 
-        this.initSalleCombo();
         this.initPlanningCombo();
         this.recupererVersionPlanning();
+        this.initDateCombo();
+        this.initSalleCombo();
+
+        this.date = Objects.requireNonNull(comboDate.getSelectedItem()).toString();
+        String[] dateSplit = date.split("/");
+        this.dateFormated = dateSplit[2] + dateSplit[1] + dateSplit[0];
 
         logoutButton.addActionListener(new ActionListener() {
             @Override
@@ -76,10 +81,16 @@ public class HomeView extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 recupererVersionPlanning();
-                reinitTableau();
+                reInitTableau();
             }
         });
 
+        comboDate.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                reInitTableau();
+            }
+        });
     }
 
     public HomeView(HP hp) throws HeadlessException {
@@ -99,11 +110,16 @@ public class HomeView extends JFrame {
         this.centerTable();
     }
 
-    private void reinitTableau() {
+    private void reInitTableau() {
+        this.date = Objects.requireNonNull(comboDate.getSelectedItem()).toString();
+        String[] dateSplit = date.split("/");
+        this.dateFormated = dateSplit[2] + dateSplit[1] + dateSplit[0];
+
         if(this.hp.isDoctorOrManager() == 0) {
             this.initialisationTableauPlanningDocteur(0);
         } else if (this.hp.isDoctorOrManager() == 1) {
             this.initialisationTableauPlanningGlobal();
+            this.initialisationTableauPlanningSalle();
         }
     }
 
@@ -135,24 +151,31 @@ public class HomeView extends JFrame {
     }
 
     private void initDocteurCombo() {
+        Query query = em.createNamedQuery("Doctor.getDoctorsOfDay");
+        query.setParameter("planningid", this.planningId);
+        query.setParameter("date", this.dateFormated);
 
-            Query query = em.createNamedQuery("Doctor.getDoctorsOfDay");
-            query.setParameter("planningid", this.planningId);
-            query.setParameter("date", date);
+        List<HP> docteurs =  query.getResultList();
+        for(HP d : docteurs) docteurCombo.addItem(d.getId() + " - " + d.getFirstname() + " " + d.getName());
 
-            List<HP> docteurs =  query.getResultList();
-            for(HP d : docteurs) {
-                docteurCombo.addItem(d.getId() + " - " + d.getFirstname() + " " + d.getName());
-            }
+    }
+
+    private void initDateCombo() {
+        Query query = em.createNamedQuery("Planning.getAllDate");
+        query.setParameter("planningid", this.planningId);
+
+        List<String> dates =  query.getResultList();
+        for(String d : dates)  {
+            d = d.substring(6,8) + "/" + d.substring(4,6) + "/" + d.substring(0,4);
+            comboDate.addItem(d);
+        }
     }
 
     private void initSalleCombo() {
         Query query = em.createNamedQuery("Salle.getAll");
 
         List<Salle> list =  query.getResultList();
-        for(Salle s : list) {
-            salleCombo.addItem(s.getNumero() + " - " + s.getNom());
-        }
+        for(Salle s : list) salleCombo.addItem(s.getNumero() + " - " + s.getNom());
     }
 
     private void initPlanningCombo() {
@@ -228,7 +251,7 @@ public class HomeView extends JFrame {
 
         query.setParameter("planningid", this.planningId);
         query.setParameter("doctorid", hp);
-        query.setParameter("date", this.date);
+        query.setParameter("date", this.dateFormated);
 
         List<RendezVous> planningDocteur = query.getResultList();
         planningDocteur.sort(Comparator.comparing(rv -> rv.getCreneau().getStartHour()));
@@ -254,12 +277,10 @@ public class HomeView extends JFrame {
 
         query.setParameter("planningid", this.planningId);
 
-        // Récupérer l'élement sélectionné dans la combobox
         String salle = salleCombo.getSelectedItem().toString();
         String[] salleSplit = salle.split(" - ");
         query.setParameter("sallenum", Integer.parseInt(salleSplit[0]));
-        //query.setParameter("date", date.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
-        query.setParameter("date", this.date);
+        query.setParameter("date", this.dateFormated);
 
         List<RendezVous> planningSalle = query.getResultList();
         planningSalle.sort(Comparator.comparing(rv -> rv.getCreneau().getStartHour()));
@@ -284,7 +305,7 @@ public class HomeView extends JFrame {
 
         Query query = em.createNamedQuery("Planning.getAllRdv");
         query.setParameter("planningid", this.planningId);
-        query.setParameter("date", this.date);
+        query.setParameter("date", this.dateFormated);
 
         List<RendezVous> planningGlobal =  query.getResultList();
         planningGlobal.sort(Comparator.comparing(rv -> rv.getCreneau().getStartHour()));
