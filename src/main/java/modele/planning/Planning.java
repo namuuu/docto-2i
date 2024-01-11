@@ -36,7 +36,10 @@ import jakarta.persistence.*;
                 query = "SELECT rv FROM RendezVous rv JOIN FETCH PlanningJournee pj JOIN FETCH Planning p " +
                         "WHERE rv.planningJournee.planning.id = :planningid " +
                         "AND rv.planningJournee.date = :date"
-        )
+        ),
+        @NamedQuery(name = "Planning.getAllDate",
+                query = "SELECT pj.date FROM PlanningJournee pj JOIN pj.planning p WHERE p.id = :planningid"
+        ),
 })
 @Entity
 public class Planning {
