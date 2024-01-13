@@ -15,88 +15,62 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.List;
 
 public class HomeView extends JFrame {
-    /** Attributs fenêtre **/
+    // Attributs fenêtre
     private JLabel labelDoctorName, rechercheSalle, rechercheDocteur, labelNameApp;
     private JPanel panelPlanning, jLabelRechercheSalle, nomDocteur, nomOnglet;
     private JTable tablePlanningGlobal, tablePlanningDocteur, tablePlanningSalle;
     private JButton logoutButton, validerRechercheDocteur, optimiserButton, validerRechercheSalle;
     private JTabbedPane selectionPlanning;
-    private JComboBox salleCombo, planningCombo, docteurCombo;
-    private JScrollPane scrollTableSalle;
-    private JComboBox comboDate;
+    private JComboBox salleCombo, planningCombo, docteurCombo, comboDate;
+    private JScrollPane scrollTableSalle, scrollPaneGlobal, scrollbarDocteur;
 
-    /** Attribut de gestion **/
+    // Attributs de gestion
     private HP hp;
     private EntityManagerFactory emf;
     private EntityManager em;
     private int planningId;
-    private String date = "20231101";
+    private String date;
     private String dateFormated;
 
     // Constructeur par défaut
     public HomeView() {
-        this.initEntityManager();
         this.hp = null;
+        tablePlanningSalle.getTableHeader().setVisible(false);
+
+        // Initialisation des composants
+        this.initEntityManager();
         setContentPane(panelPlanning);
 
+        // Initialisation des comboBox
         this.initPlanningCombo();
         this.recupererVersionPlanning();
         this.initDateCombo();
         this.initSalleCombo();
 
+        // Récupération de la date
         this.date = Objects.requireNonNull(comboDate.getSelectedItem()).toString();
         String[] dateSplit = date.split("/");
         this.dateFormated = dateSplit[2] + dateSplit[1] + dateSplit[0];
 
-        logoutButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Login login1 = new Login();
-                dispose();
-            }
-        });
-        validerRechercheSalle.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                initialisationTableauPlanningSalle();
-            }
-        });
-
-        validerRechercheDocteur.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String docteurId = Objects.requireNonNull(docteurCombo.getSelectedItem()).toString();
-                String[] docteurIdSplit = docteurId.split(" - ");
-                initialisationTableauPlanningDocteur(Integer.parseInt(docteurIdSplit[0]));
-            }
-        });
-
-        planningCombo.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                recupererVersionPlanning();
-                reInitTableau();
-            }
-        });
-
-        comboDate.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                reInitTableau();
-            }
-        });
+        // Listener sur les boutons & comboBox
+        listenerLogout();
+        listenerRechercheSalle();
+        listenerRechercheDocteur();
+        listenerPlanningCombo();
+        listenerComboDate();
     }
-
+    // Constructeur avec un HP en paramètre
     public HomeView(HP hp) throws HeadlessException {
         this();
         this.hp = hp;
         this.labelDoctorName.setText(hp.getFirstname() + " " + hp.getName());
+
+        // Initialisation des composants en fonction du type de HP
         if(this.hp.isDoctorOrManager() == 0) {
             this.selectionPlanning.remove(0);
             this.selectionPlanning.remove(1);
@@ -110,32 +84,23 @@ public class HomeView extends JFrame {
         this.centerTable();
     }
 
-    private void reInitTableau() {
-        this.date = Objects.requireNonNull(comboDate.getSelectedItem()).toString();
-        String[] dateSplit = date.split("/");
-        this.dateFormated = dateSplit[2] + dateSplit[1] + dateSplit[0];
-
-        if(this.hp.isDoctorOrManager() == 0) {
-            this.initialisationTableauPlanningDocteur(0);
-        } else if (this.hp.isDoctorOrManager() == 1) {
-            this.initialisationTableauPlanningGlobal();
-            this.initialisationTableauPlanningSalle();
-        }
-    }
-
-    private void recupererVersionPlanning() {
-        // Récupérer la string sélectionné (ex:"PlanningVX") et ne garder que la valeur X
-        String planning = Objects.requireNonNull(planningCombo.getSelectedItem()).toString();
-        String[] planningSplit = planning.split("V");
-        this.planningId = Integer.parseInt(planningSplit[1]);
-        System.out.println(this.planningId);
-    }
-
+    // Initialisation de l'entity manager
     private void initEntityManager() {
         this.emf = Persistence.createEntityManagerFactory("Docto2IPU");
         this.em = emf.createEntityManager();
     }
 
+    // Initialisation de la fenêtre
+    private void initialisationFenetre() {
+        this.setTitle("DOCTO2I - Planning");
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        this.setLocationRelativeTo(null);
+        this.getContentPane().setBackground(java.awt.Color.ORANGE);
+        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.setVisible(true);
+    }
+
+    // Centrer les différents tableaux de l'application (Global, Docteur, Salle)
     private void centerTable() {
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment( JLabel.CENTER );
@@ -144,12 +109,43 @@ public class HomeView extends JFrame {
         tablePlanningGlobal.setDefaultRenderer(Object.class, centerRenderer);
     }
 
+    // Re-initialisation des tableaux en fonction des comboBox
+    private void reInitTableau() {
+
+        // Récupération de la date
+        this.date = Objects.requireNonNull(comboDate.getSelectedItem()).toString();
+        String[] dateSplit = date.split("/");
+        this.dateFormated = dateSplit[2] + dateSplit[1] + dateSplit[0];
+
+        // Initialisation des composants en fonction du type de HP
+        if(this.hp.isDoctorOrManager() == 0) {
+            this.initialisationTableauPlanningDocteur(0);
+        } else if (this.hp.isDoctorOrManager() == 1) {
+            // Récupération de l'id du docteur sélectionné
+            String docteurId = Objects.requireNonNull(docteurCombo.getSelectedItem()).toString();
+            String[] docteurIdSplit = docteurId.split(" - ");
+            initialisationTableauPlanningDocteur(Integer.parseInt(docteurIdSplit[0]));
+
+            this.initialisationTableauPlanningGlobal();
+            this.initialisationTableauPlanningSalle();
+        }
+    }
+
+    // Récupération de la version du planning sélectionné (ex: PlanningV1 => 1)
+    private void recupererVersionPlanning() {
+        String planning = Objects.requireNonNull(planningCombo.getSelectedItem()).toString();
+        String[] planningSplit = planning.split("V");
+        this.planningId = Integer.parseInt(planningSplit[1]);
+    }
+
+    // Désactivation des composants de recherche de docteur lorsqu'on est un manager
     private void desacRechercheMedecin() {
         rechercheDocteur.setVisible(false);
         docteurCombo.setVisible(false);
         validerRechercheDocteur.setVisible(false);
     }
 
+    // Initialisation des comboBox pour la recherche du planning docteur
     private void initDocteurCombo() {
         Query query = em.createNamedQuery("Doctor.getDoctorsOfDay");
         query.setParameter("planningid", this.planningId);
@@ -157,20 +153,22 @@ public class HomeView extends JFrame {
 
         List<HP> docteurs =  query.getResultList();
         for(HP d : docteurs) docteurCombo.addItem(d.getId() + " - " + d.getFirstname() + " " + d.getName());
-
     }
 
+    // Initialisation de la comboBox pour la mise à jour de date du planning
     private void initDateCombo() {
         Query query = em.createNamedQuery("Planning.getAllDate");
         query.setParameter("planningid", this.planningId);
 
         List<String> dates =  query.getResultList();
         for(String d : dates)  {
+            // Mise en forme de la date sous le format JJ/MM/AAAA
             d = d.substring(6,8) + "/" + d.substring(4,6) + "/" + d.substring(0,4);
             comboDate.addItem(d);
         }
     }
 
+    // Initialisation de la comboBox pour la recherche de salle
     private void initSalleCombo() {
         Query query = em.createNamedQuery("Salle.getAll");
 
@@ -178,6 +176,7 @@ public class HomeView extends JFrame {
         for(Salle s : list) salleCombo.addItem(s.getNumero() + " - " + s.getNom());
     }
 
+    // Initialisation de la comboBox pour le planning
     private void initPlanningCombo() {
         Query query = em.createNamedQuery("Planning.getAllVersion");
 
@@ -187,6 +186,7 @@ public class HomeView extends JFrame {
         }
     }
 
+    // Initialisation du tableau du planning global
     private void initialisationTableauPlanningGlobal() {
         tablePlanningGlobal.setEnabled(false);
         tablePlanningGlobal.setRowHeight(50);
@@ -195,12 +195,14 @@ public class HomeView extends JFrame {
         model.addColumn("Jour");
 
         this.getPlanningGlobal(model, LocalDate.now());
+        tablePlanningGlobal.getTableHeader().setVisible(false);
 
         tablePlanningGlobal.setModel(model);
         tablePlanningGlobal.getColumnModel().getColumn(0).setPreferredWidth(150);
         tablePlanningGlobal.getColumnModel().getColumn(1).setPreferredWidth(750);
     }
 
+    // Initialisation du tableau du planning salle
     private void initialisationTableauPlanningSalle(){
         tablePlanningSalle.setEnabled(false);
         tablePlanningSalle.setRowHeight(50);
@@ -214,8 +216,10 @@ public class HomeView extends JFrame {
         tablePlanningSalle.setModel(model);
         tablePlanningSalle.getColumnModel().getColumn(0).setPreferredWidth(150);
         tablePlanningSalle.getColumnModel().getColumn(1).setPreferredWidth(750);
+
     }
 
+    // Initialisation du tableau du planning docteur
     private void initialisationTableauPlanningDocteur(int hp){
 
         tablePlanningDocteur.setEnabled(false);
@@ -229,21 +233,14 @@ public class HomeView extends JFrame {
         } else {
             this.getPlanningDocteur(model, hp, LocalDate.now());
         }
+        tablePlanningDocteur.getTableHeader().setVisible(false);
 
         tablePlanningDocteur.setModel(model);
         tablePlanningDocteur.getColumnModel().getColumn(0).setPreferredWidth(150);
         tablePlanningDocteur.getColumnModel().getColumn(1).setPreferredWidth(750);
     }
 
-    private void initialisationFenetre() {
-        this.setTitle("DOCTO2I - Planning");
-        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        this.setLocationRelativeTo(null);
-        this.getContentPane().setBackground(java.awt.Color.ORANGE);
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setVisible(true);
-    }
-
+    // Requete pour récupérer le planning du docteur
     private void getPlanningDocteur(DefaultTableModel model, int hp, LocalDate date) {
 
         Query query = em.createNamedQuery("Planning.getJourneeOfDoctorByDate");
@@ -271,10 +268,10 @@ public class HomeView extends JFrame {
         }
     }
 
+    // Requete pour récupérer le planning de la salle
     private void getPlanningSalle(DefaultTableModel model, LocalDate date) {
 
         Query query = em.createNamedQuery("Planning.getJourneeOfSalleByDate");
-
         query.setParameter("planningid", this.planningId);
 
         String salle = salleCombo.getSelectedItem().toString();
@@ -301,6 +298,7 @@ public class HomeView extends JFrame {
         }
     }
 
+    // Requete pour récupérer le planning global
     private void getPlanningGlobal(DefaultTableModel model, LocalDate date) {
 
         Query query = em.createNamedQuery("Planning.getAllRdv");
@@ -321,6 +319,55 @@ public class HomeView extends JFrame {
                 });
             }
         }
+    }
+
+    private void listenerLogout() {
+        logoutButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Login login1 = new Login();
+                dispose();
+            }
+        });
+    }
+
+    private void listenerRechercheSalle() {
+        validerRechercheSalle.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                initialisationTableauPlanningSalle();
+            }
+        });
+    }
+
+    private void listenerRechercheDocteur() {
+        validerRechercheDocteur.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String docteurId = Objects.requireNonNull(docteurCombo.getSelectedItem()).toString();
+                String[] docteurIdSplit = docteurId.split(" - ");
+                initialisationTableauPlanningDocteur(Integer.parseInt(docteurIdSplit[0]));
+            }
+        });
+    }
+
+    private void listenerPlanningCombo() {
+        planningCombo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                recupererVersionPlanning();
+                reInitTableau();
+            }
+        });
+    }
+
+    private void listenerComboDate() {
+        comboDate.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                reInitTableau();
+            }
+        });
     }
 
     public static void main(String[] args) {
