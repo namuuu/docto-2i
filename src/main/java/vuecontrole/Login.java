@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Objects;
 
 public class Login extends JFrame {
     /** Attributs Fenêtre **/
@@ -28,7 +29,7 @@ public class Login extends JFrame {
 
     private void chargementLogo() {
         // Récupération de l'image depuis le fichier local
-        ImageIcon logo = new ImageIcon(getClass().getResource("/images/logo.png"));
+        ImageIcon logo = new ImageIcon(Objects.requireNonNull(getClass().getResource("/images/logo.png")));
 
         // Redimensionnement de l'image
         Image image = logo.getImage();

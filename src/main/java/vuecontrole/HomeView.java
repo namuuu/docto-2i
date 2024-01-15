@@ -58,11 +58,11 @@ public class HomeView extends JFrame {
         this.dateFormated = dateSplit[2] + dateSplit[1] + dateSplit[0];
 
         // Listener sur les boutons & comboBox
-        listenerLogout();
-        listenerRechercheSalle();
-        listenerRechercheDocteur();
-        listenerPlanningCombo();
-        listenerComboDate();
+        this.listenerLogout();
+        this.listenerRechercheSalle();
+        this.listenerRechercheDocteur();
+        this.listenerPlanningCombo();
+        this.listenerComboDate();
     }
     // Constructeur avec un HP en paramètre
     public HomeView(HP hp) throws HeadlessException {
@@ -194,7 +194,7 @@ public class HomeView extends JFrame {
         model.addColumn("Heure");
         model.addColumn("Jour");
 
-        this.getPlanningGlobal(model, LocalDate.now());
+        this.getPlanningGlobal(model);
         tablePlanningGlobal.getTableHeader().setVisible(false);
 
         tablePlanningGlobal.setModel(model);
@@ -211,12 +211,11 @@ public class HomeView extends JFrame {
         model.addColumn("Heure");
         model.addColumn("Jour");
 
-        this.getPlanningSalle(model, LocalDate.now());
+        this.getPlanningSalle(model);
 
         tablePlanningSalle.setModel(model);
         tablePlanningSalle.getColumnModel().getColumn(0).setPreferredWidth(150);
         tablePlanningSalle.getColumnModel().getColumn(1).setPreferredWidth(750);
-
     }
 
     // Initialisation du tableau du planning docteur
@@ -229,9 +228,9 @@ public class HomeView extends JFrame {
         model.addColumn("Jour");
 
         if(hp == 0) {
-            this.getPlanningDocteur(model, this.hp.getId(), LocalDate.now());
+            this.getPlanningDocteur(model, this.hp.getId());
         } else {
-            this.getPlanningDocteur(model, hp, LocalDate.now());
+            this.getPlanningDocteur(model, hp);
         }
         tablePlanningDocteur.getTableHeader().setVisible(false);
 
@@ -241,7 +240,7 @@ public class HomeView extends JFrame {
     }
 
     // Requete pour récupérer le planning du docteur
-    private void getPlanningDocteur(DefaultTableModel model, int hp, LocalDate date) {
+    private void getPlanningDocteur(DefaultTableModel model, int hp) {
 
         Query query = em.createNamedQuery("Planning.getJourneeOfDoctorByDate");
 
@@ -269,7 +268,7 @@ public class HomeView extends JFrame {
     }
 
     // Requete pour récupérer le planning de la salle
-    private void getPlanningSalle(DefaultTableModel model, LocalDate date) {
+    private void getPlanningSalle(DefaultTableModel model) {
 
         Query query = em.createNamedQuery("Planning.getJourneeOfSalleByDate");
         query.setParameter("planningid", this.planningId);
@@ -299,7 +298,7 @@ public class HomeView extends JFrame {
     }
 
     // Requete pour récupérer le planning global
-    private void getPlanningGlobal(DefaultTableModel model, LocalDate date) {
+    private void getPlanningGlobal(DefaultTableModel model) {
 
         Query query = em.createNamedQuery("Planning.getAllRdv");
         query.setParameter("planningid", this.planningId);
@@ -321,6 +320,7 @@ public class HomeView extends JFrame {
         }
     }
 
+    // Permet la déconnexion de l'utilisateur connecté et le retour à la page de connexion
     private void listenerLogout() {
         logoutButton.addActionListener(new ActionListener() {
             @Override
@@ -331,6 +331,7 @@ public class HomeView extends JFrame {
         });
     }
 
+    // Permet la validation et le lancement de la requête de recherche de salle
     private void listenerRechercheSalle() {
         validerRechercheSalle.addActionListener(new ActionListener() {
             @Override
@@ -340,6 +341,7 @@ public class HomeView extends JFrame {
         });
     }
 
+    // Permet la recherche de docteur uniquement si l'utilisateur est connecté en manager
     private void listenerRechercheDocteur() {
         validerRechercheDocteur.addActionListener(new ActionListener() {
             @Override
@@ -351,6 +353,7 @@ public class HomeView extends JFrame {
         });
     }
 
+    // Permet la mise à jour du planning en fonction du planning sélectionné
     private void listenerPlanningCombo() {
         planningCombo.addActionListener(new ActionListener() {
             @Override
@@ -361,6 +364,7 @@ public class HomeView extends JFrame {
         });
     }
 
+    // Permet la mise à jour du planning en fonction de la date sélectionnée
     private void listenerComboDate() {
         comboDate.addActionListener(new ActionListener() {
             @Override
