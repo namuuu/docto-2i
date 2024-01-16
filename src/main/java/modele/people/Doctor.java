@@ -43,18 +43,6 @@ public class Doctor extends HP {
         return healthProfessionalNumber;
     }
 
-    public void setHealthProfessionalNumber(int healthProfessionalNumber) {
-        this.healthProfessionalNumber = healthProfessionalNumber;
-    }
-
-    public boolean isIntern() {
-        return intern;
-    }
-
-    public void setIntern(boolean intern) {
-        this.intern = intern;
-    }
-
     @Override
     public String toString() {
         return "Doctor{" +

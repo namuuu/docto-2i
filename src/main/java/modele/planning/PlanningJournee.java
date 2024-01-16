@@ -67,20 +67,8 @@ public class PlanningJournee {
         return date;
     }
 
-    public Manager getResponsibleManager() {
-        return responsibleManager;
-    }
-
     public List<Doctor> getDoctors() {
         return doctors;
-    }
-
-    public List<Manager> getManagers() {
-        return managers;
-    }
-
-    public List<Salle> getSalles() {
-        return salles;
     }
 
     public List<RendezVous> getRendezVous() {

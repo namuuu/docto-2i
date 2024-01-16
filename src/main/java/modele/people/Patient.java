@@ -34,11 +34,7 @@ public class Patient extends Person {
     public boolean isSpecialized() {
         return specialized;
     }
-
-    public void setSpecialized(boolean specialized) {
-        this.specialized = specialized;
-    }
-
+  
     @Override
     public String toString() {
         return "Patient{" +

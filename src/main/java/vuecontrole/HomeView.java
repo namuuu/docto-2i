@@ -53,9 +53,7 @@ public class HomeView extends JFrame {
         this.initSalleCombo();
 
         // Récupération de la date
-        this.date = Objects.requireNonNull(comboDate.getSelectedItem()).toString();
-        String[] dateSplit = date.split("/");
-        this.dateFormated = dateSplit[2] + dateSplit[1] + dateSplit[0];
+        this.recupererDate();
 
         // Listener sur les boutons & comboBox
         this.listenerLogout();
@@ -115,9 +113,7 @@ public class HomeView extends JFrame {
     private void reInitTableau() {
 
         // Récupération de la date
-        this.date = Objects.requireNonNull(comboDate.getSelectedItem()).toString();
-        String[] dateSplit = date.split("/");
-        this.dateFormated = dateSplit[2] + dateSplit[1] + dateSplit[0];
+        this.recupererDate();
 
         // Initialisation des composants en fonction du type de HP
         if(this.hp.isDoctorOrManager() == 0) {
@@ -235,6 +231,7 @@ public class HomeView extends JFrame {
 
         if(hp == 0) {
             this.getPlanningDocteur(model, this.hp.getId());
+            this.optimiserButton.setVisible(false);
         } else {
             this.getPlanningDocteur(model, hp);
         }
@@ -391,6 +388,11 @@ public class HomeView extends JFrame {
         });
     }
 
+    private void recupererDate() {
+        this.date = Objects.requireNonNull(comboDate.getSelectedItem()).toString();
+        String[] dateSplit = date.split("/");
+        this.dateFormated = dateSplit[2] + dateSplit[1] + dateSplit[0];
+  
     private void chargementLogo() {
         // Récupération de l'image depuis le fichier local
         ImageIcon logo = new ImageIcon(Objects.requireNonNull(getClass().getResource("/images/logo-white.png")));
