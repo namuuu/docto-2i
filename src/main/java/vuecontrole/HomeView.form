@@ -171,12 +171,12 @@
           </grid>
         </children>
       </tabbedpane>
-      <component id="bf23b" class="javax.swing.JLabel" binding="labelNameApp">
+      <component id="bf23b" class="javax.swing.JLabel" binding="logo">
         <constraints>
           <grid row="0" column="0" row-span="2" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Docto2I"/>
+          <text value=" "/>
         </properties>
       </component>
       <component id="13f13" class="javax.swing.JButton" binding="logoutButton">

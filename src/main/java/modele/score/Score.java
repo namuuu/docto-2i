@@ -13,47 +13,15 @@ import java.util.List;
 
 public class Score {
 
-    private Planning planning;
-
-    private int score = 0;
-
-    /**
-     * Creer le score d'un planning sans comparaison (généralement le planning initial)
-     * @param planning
-     */
-    public Score(Planning planning) {
-        this.planning = planning;
-    }
+    public int oldScore = 0;
+    public int newScore = 0;
+    public int finalScore = 0;
 
     public Score(int planningid) {
-        final EntityManagerFactory emf = Persistence.createEntityManagerFactory("Docto2IPU");
-        final EntityManager em = emf.createEntityManager();
-
-        try {
-            final EntityTransaction et =em.getTransaction();
-            try {
-                et.begin();
-
-                Planning planning = em.createNamedQuery("Planning.getById", Planning.class)
-                        .setParameter("id", planningid)
-                        .getSingleResult();
-
-                this.planning = planning;
-
-                et.commit();
-            } catch (Exception e) {
-                System.err.println(e);
-                et.rollback();
-            }
-        } finally {
-            if (em != null && em.isOpen())
-                em.close();
-            if (emf != null && emf.isOpen())
-                emf.close();
-        }
+        oldScore = calculateScore(planningid);
     }
 
-    public void calculateScore() {
+    public int calculateScore(int planningid) {
         final EntityManagerFactory emf = Persistence.createEntityManagerFactory("Docto2IPU");
         final EntityManager em = emf.createEntityManager();
 
@@ -62,14 +30,16 @@ public class Score {
             try {
                 et.begin();
 
+                int score = 0;
+
                 List<PlanningJournee> pjList = em.createNamedQuery("Planning.getJourneesById", PlanningJournee.class)
-                        .setParameter("id", planning.getId())
+                        .setParameter("id", planningid)
                         .getResultList();
 
                 for(PlanningJournee pj : pjList) {
                     for(Doctor doc : pj.getDoctors()) {
                         List<RendezVous> rvList = em.createNamedQuery("Planning.getJourneeOfDoctorByDate", RendezVous.class)
-                                .setParameter("planningid", planning.getId())
+                                .setParameter("planningid", planningid)
                                 .setParameter("doctorid", doc.getId())
                                 .setParameter("date", pj.getDate())
                                 .getResultList();
@@ -92,9 +62,9 @@ public class Score {
                     }
                 }
 
-                System.out.println("Score initial : " + score);
-
                 et.commit();
+
+                return score;
             } catch (Exception e) {
                 et.rollback();
                 throw new RuntimeException(e);
@@ -107,15 +77,11 @@ public class Score {
         }
     }
 
-
-    public Planning getPlanning() {
-        return planning;
-    }
-
     public static void main(String[] args) {
-        Score oldScore = new Score(1);
-        oldScore.calculateScore();
-        Score score = new Score(6);
-        score.calculateScore();
+        Score score = new Score(1);
+        Optimizer optimizer = new Optimizer();
+        optimizer.optimize(2);
+        score.newScore = score.calculateScore(2);
+        score.finalScore = score.newScore - score.oldScore;
     }
 }
