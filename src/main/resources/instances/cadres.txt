@@ -1,0 +1,3 @@
+0;gasparda;AlzaGard;Gaspard;Alizan;06/05/1975;171, Rue Champollion, Dunkerque;
+1;colettes;SteColte;Colette;Stérole;21/09/1986;139, Rue de la Vignette, Cambrai;
+2;clementt;CleetTin;Clément;Tine;10/04/1973;58, Rue d'Alger, Bruay-la-Buissière;
