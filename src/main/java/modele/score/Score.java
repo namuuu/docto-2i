@@ -15,11 +15,7 @@ public class Score {
 
     private Planning planning;
 
-    private Planning oldPlanning = null;
-
-    private int scoreInitial = 0;
-
-    private int scoreFinal = 0;
+    private int score = 0;
 
     /**
      * Creer le score d'un planning sans comparaison (généralement le planning initial)
@@ -57,17 +53,7 @@ public class Score {
         }
     }
 
-    /**
-     * Creer le score d'un planning avec comparaison (généralement le planning final)
-     * @param planning
-     * @param oldPlanning
-     */
-    public Score(Planning planning, Planning oldPlanning) {
-        this.planning = planning;
-        this.oldPlanning = oldPlanning;
-    }
-
-    public void calculateInitialScore() {
+    public void calculateScore() {
         final EntityManagerFactory emf = Persistence.createEntityManagerFactory("Docto2IPU");
         final EntityManager em = emf.createEntityManager();
 
@@ -95,18 +81,18 @@ public class Score {
                             // S'il y a un trou entre ce créneau et le précédent
                             // Cela calcule à la fois tm et vm
                             if(rvList.get(i).getCreneau().getStartHour() - rvList.get(i-1).getCreneau().getStartHour() > 1) {
-                                scoreInitial += rvList.get(i).getCreneau().getStartHour() - rvList.get(i-1).getCreneau().getStartHour();
+                                score += rvList.get(i).getCreneau().getStartHour() - rvList.get(i-1).getCreneau().getStartHour();
                             }
 
                             // S'ily a changement de salle
                             if(!rvList.get(i).getSalle().equals(rvList.get(i-1).getSalle())) {
-                                scoreInitial += 1;
+                                score += 1;
                             }
                         }
                     }
                 }
 
-                System.out.println("Score initial : " + scoreInitial);
+                System.out.println("Score initial : " + score);
 
                 et.commit();
             } catch (Exception e) {
@@ -126,14 +112,10 @@ public class Score {
         return planning;
     }
 
-    public Planning getOldPlanning() {
-        return oldPlanning;
-    }
-
     public static void main(String[] args) {
         Score oldScore = new Score(1);
-        oldScore.calculateInitialScore();
-        Score score = new Score(2);
-        score.calculateInitialScore();
+        oldScore.calculateScore();
+        Score score = new Score(6);
+        score.calculateScore();
     }
 }

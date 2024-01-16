@@ -39,7 +39,7 @@ public class PlanningJournee {
     @ManyToMany
     private List<Salle> salles = new ArrayList<>();
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<RendezVous> rendezVous = new ArrayList<>();
 
     public PlanningJournee() {
