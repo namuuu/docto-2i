@@ -11,15 +11,15 @@ public class RendezVous {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer rvid;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Patient patient;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Creneau creneau;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Salle salle;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Doctor doctor;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private PlanningJournee planningJournee;
 
     public RendezVous() {
