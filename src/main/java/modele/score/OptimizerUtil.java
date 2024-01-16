@@ -85,6 +85,7 @@ public class OptimizerUtil {
                     difference = lastHour - brick.getStartHour();
                 }
             }
+
             difference = 0;
         }
 

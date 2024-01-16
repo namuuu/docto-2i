@@ -109,6 +109,21 @@ public class Optimizer {
                     + " - Salle : " + brick.getSalle().getNumero());
         }
 
+        ArrayList<RendezVous> rendezVousToImport = new ArrayList<>();
+
+        for(RDVBrick brick : rdvBricks) {
+            for(RendezVous rendezVous : brick.getRendezVous()) {
+                rendezVousToImport.add(
+                        new RendezVous(
+                                rendezVous.getPatient(),
+                                rendezVous.getCreneau(),
+                                brick.getSalle(),
+                                brick.getDoctor()
+                        )
+                );
+            }
+        }
+
         PlanningJournee newPlanningJournee = new PlanningJournee(
                 planningJournee.getDate(),
                 planningJournee.getResponsibleManager(),
@@ -116,7 +131,7 @@ public class Optimizer {
                 new ArrayList<>(planningJournee.getDoctors()),
                 new ArrayList<>(planningJournee.getManagers()),
                 new ArrayList<>(planningJournee.getSalles()),
-                new ArrayList<>()
+                rendezVousToImport
         );
 
         em.persist(newPlanningJournee);
