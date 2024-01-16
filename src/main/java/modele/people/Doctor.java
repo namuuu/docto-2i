@@ -20,8 +20,6 @@ import java.util.Date;
 })
 public class Doctor extends HP {
 
-
-
     @Column(
             name = "health_professional_number"
     )

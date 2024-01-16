@@ -5,13 +5,11 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import modele.HP;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
+import java.util.Objects;
 
 public class Login extends JFrame {
     /** Attributs Fenêtre **/
@@ -25,27 +23,25 @@ public class Login extends JFrame {
     public Login() throws HeadlessException {
         setContentPane(panelLogin);
         initialisationFenetre();
-        //chargementLogo();
+        chargementLogo();
         listenerConnexion();
     }
 
-    // Chargement du logo visible sur la page de login
     private void chargementLogo() {
-        // Récupération de l'image
-        ImageIcon logo = new ImageIcon("src/main/resources/logo.png");
+        // Récupération de l'image depuis le fichier local
+        ImageIcon logo = new ImageIcon(Objects.requireNonNull(getClass().getResource("/images/logo.png")));
 
         // Redimensionnement de l'image
-        Image img = logo.getImage();
-        Image imgScaled = img.getScaledInstance(200, 200, Image.SCALE_SMOOTH);
-        ImageIcon imgIsScaled = new ImageIcon(imgScaled);
+        Image image = logo.getImage();
+        Image newimg = image.getScaledInstance(144, 120,  java.awt.Image.SCALE_SMOOTH);
+        logo = new ImageIcon(newimg);
+        // Centrer l'image
+        logo.setImageObserver(this.logo);
 
-        // Ajout de l'image au panel
-        this.logo = new JLabel(imgIsScaled);
-        panelLogin.add(this.logo);
-        //panelLogin.repaint();
-        //panelLogin.revalidate();
-
+        // Ajout de l'image à l'interface graphique
+        this.logo.setIcon(logo);
     }
+
 
     // Requete de connexion de l'utilisateur
     private void initConnexion() {
@@ -58,12 +54,10 @@ public class Login extends JFrame {
                     .setParameter("password", passwordField.getText())
                     .getSingleResult();
             if(hp != null) {
-                System.out.println("hp :" + hp);
                 HomeView homeView1 = new HomeView(hp);
                 this.dispose();
             }
         } catch(Exception e) {
-            //System.out.println(e);
             JOptionPane.showMessageDialog(null, "Login ou mot de passe incorrect",
                     "Erreur", JOptionPane.ERROR_MESSAGE);
             throw new RuntimeException(e);
@@ -75,7 +69,7 @@ public class Login extends JFrame {
         this.setTitle("DOCTO2I - Login");
         this.setSize(400, 550);
         this.setLocationRelativeTo(null);
-        this.getContentPane().setBackground(Color.ORANGE);
+        this.getContentPane().setBackground(Color.LIGHT_GRAY);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setVisible(true);
     }
