@@ -8,6 +8,7 @@ import modele.HP;
 import modele.RendezVous;
 import modele.Salle;
 import modele.planning.Planning;
+import modele.score.Optimizer;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -15,13 +16,12 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.time.LocalDate;
 import java.util.*;
 import java.util.List;
 
 public class HomeView extends JFrame {
     // Attributs fenêtre
-    private JLabel labelDoctorName, rechercheSalle, rechercheDocteur, labelNameApp;
+    private JLabel labelDoctorName, rechercheSalle, rechercheDocteur, logo;
     private JPanel panelPlanning, jLabelRechercheSalle, nomDocteur, nomOnglet;
     private JTable tablePlanningGlobal, tablePlanningDocteur, tablePlanningSalle;
     private JButton logoutButton, validerRechercheDocteur, optimiserButton, validerRechercheSalle;
@@ -63,6 +63,8 @@ public class HomeView extends JFrame {
         this.listenerRechercheDocteur();
         this.listenerPlanningCombo();
         this.listenerComboDate();
+        this.listenerOptimiser();
+        this.chargementLogo();
     }
     // Constructeur avec un HP en paramètre
     public HomeView(HP hp) throws HeadlessException {
@@ -133,6 +135,7 @@ public class HomeView extends JFrame {
 
     // Récupération de la version du planning sélectionné (ex: PlanningV1 => 1)
     private void recupererVersionPlanning() {
+        if(planningCombo.getSelectedItem() == null) return;
         String planning = Objects.requireNonNull(planningCombo.getSelectedItem()).toString();
         String[] planningSplit = planning.split("V");
         this.planningId = Integer.parseInt(planningSplit[1]);
@@ -180,8 +183,11 @@ public class HomeView extends JFrame {
     private void initPlanningCombo() {
         Query query = em.createNamedQuery("Planning.getAllVersion");
 
+        planningCombo.removeAllItems();
+
         List<Planning> list =  query.getResultList();
         for(Planning p : list) {
+            System.out.println(p.getId());
             planningCombo.addItem("Planning V" + p.getId());
         }
     }
@@ -341,6 +347,17 @@ public class HomeView extends JFrame {
         });
     }
 
+    private void listenerOptimiser() {
+        optimiserButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Optimizer optimizer = new Optimizer();
+                optimizer.optimize(planningId);
+                initPlanningCombo();
+            }
+        });
+    }
+
     // Permet la recherche de docteur uniquement si l'utilisateur est connecté en manager
     private void listenerRechercheDocteur() {
         validerRechercheDocteur.addActionListener(new ActionListener() {
@@ -372,6 +389,21 @@ public class HomeView extends JFrame {
                 reInitTableau();
             }
         });
+    }
+
+    private void chargementLogo() {
+        // Récupération de l'image depuis le fichier local
+        ImageIcon logo = new ImageIcon(Objects.requireNonNull(getClass().getResource("/images/logo-white.png")));
+
+        // Redimensionnement de l'image
+        Image image = logo.getImage();
+        Image newimg = image.getScaledInstance(72, 60,  java.awt.Image.SCALE_SMOOTH);
+        logo = new ImageIcon(newimg);
+        // Centrer l'image
+        logo.setImageObserver(this.logo);
+
+        // Ajout de l'image à l'interface graphique
+        this.logo.setIcon(logo);
     }
 
     public static void main(String[] args) {

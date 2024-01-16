@@ -14,7 +14,7 @@ public class Optimizer {
 
     private OptimizerUtil util = new OptimizerUtil();
 
-    public void optimize() {
+    public Planning optimize(int planningId) {
         final EntityManagerFactory emf = Persistence.createEntityManagerFactory("Docto2IPU");
         final EntityManager em = emf.createEntityManager();
 
@@ -24,7 +24,7 @@ public class Optimizer {
                 et.begin();
 
                 Query query = em.createNamedQuery("Planning.getJourneesById");
-                query.setParameter("id", 1);
+                query.setParameter("id", planningId);
 
                 ArrayList<PlanningJournee> planningJournees = (ArrayList<PlanningJournee>) query.getResultList();
 
@@ -39,6 +39,8 @@ public class Optimizer {
                 em.persist(newPlanning);
 
                 et.commit();
+
+                return newPlanning;
             } catch (Exception e) {
                 et.rollback();
                 throw new RuntimeException(e);
@@ -140,6 +142,6 @@ public class Optimizer {
 
     public static void main(String[] args) {
         Optimizer optimizer = new Optimizer();
-        optimizer.optimize();
+        optimizer.optimize(1);
     }
 }
