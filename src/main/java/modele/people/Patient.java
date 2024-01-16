@@ -27,14 +27,6 @@ public class Patient extends Person {
         this.identifier = identifier;
     }
 
-    public boolean isRequest_type() {
-        return request_type;
-    }
-
-    public void setRequest_type(boolean request_type) {
-        this.request_type = request_type;
-    }
-
     @Override
     public String toString() {
         return "Patient{" +

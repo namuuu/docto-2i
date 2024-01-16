@@ -48,10 +48,6 @@ public class RendezVous {
         return doctor;
     }
 
-    public PlanningJournee getPlanningJournee() {
-        return planningJournee;
-    }
-
     public void setPlanningJournee(PlanningJournee planningJournee) {
         this.planningJournee = planningJournee;
     }

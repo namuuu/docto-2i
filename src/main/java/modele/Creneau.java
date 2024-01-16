@@ -25,10 +25,6 @@ public class Creneau {
         return startHour;
     }
 
-    public void setStartHour(int startHour) {
-        this.startHour = startHour;
-    }
-
     @Override
     public String toString() {
         return "Creneau{" +
