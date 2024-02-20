@@ -16,5 +16,5 @@ Documentation for this project can be found on this [Gitbook project](https://ig
 | Role  | Name | Github |
 | ------------- | ------------- | ------------- |
 | Developer  | Leevan DAVID  | [namuuu](https://github.com/namuuu) |
-| Developer  | Tomas TRENY  | [TRETomas](https://github.com/TRETomas) |
+| Developer  | Tomas TRENY  | [Viixyy](https://github.com/viixyy) |
 
